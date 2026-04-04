@@ -112,7 +112,7 @@ export class AuthService {
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_SECRET || 'formacao-professores-secret',
       });
 
       const user = await this.usersRepository.findOne({
