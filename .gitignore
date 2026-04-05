@@ -31,3 +31,6 @@ Thumbs.db
 # Flutter
 app/.packages
 app/pubspec.lock
+
+# Firebase
+app/android/app/google-services.json

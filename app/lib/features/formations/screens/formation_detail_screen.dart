@@ -73,7 +73,14 @@ class FormationDetailScreen extends ConsumerWidget {
                     );
                     return ModuleCard(
                       module: module,
-                      onTap: () => context.push('/modules/${module.id}'),
+                      onTap: () => context.push(
+                        '/modules/${module.id}',
+                        extra: {
+                          'titulo': module.titulo,
+                          'descricao': module.descricao,
+                          'videoUrl': module.videoUrl,
+                        },
+                      ),
                     );
                   },
                 ),

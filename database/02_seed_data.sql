@@ -92,6 +92,9 @@ ON CONFLICT DO NOTHING;
 -- ============================================================
 -- Módulos (3 por formação = 30 módulos total)
 -- ============================================================
+-- NOTA: As URLs de vídeo abaixo são placeholders para desenvolvimento.
+-- Em produção, substituir pelas URLs reais do Firebase Storage:
+-- Padrão: https://firebasestorage.googleapis.com/v0/b/midiasave-5c064.firebasestorage.app/o/formacao-professores%2Fformations%2Fvideos%2F{formationId}%2F{timestamp}_{uuid4hex}.mp4?alt=media
 
 -- Módulos: Reforço Escolar Gamificado (formation_id = 1)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES

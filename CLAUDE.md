@@ -14,7 +14,8 @@
 | Banco de Dados | PostgreSQL | 15 |
 | Auth | JWT + bcrypt | - |
 | Deploy | Render.com | - |
-| Vídeos | YouTube embed | - |
+| Vídeos | Firebase Storage + video_player | - |
+| Storage | Firebase Storage | - |
 
 ## Estrutura de Pastas
 
@@ -103,6 +104,21 @@ Fora do escopo MVP (Fase 2):
 - ❌ Painel administrativo
 - ❌ Upload de imagens/vídeos próprios
 - ❌ iOS (App Store)
+
+## Firebase Storage
+- Projeto: midiasave-5c064 (mesmo do BASTA)
+- Bucket: midiasave-5c064.firebasestorage.app
+- Usado APENAS para Storage (sem Auth/Firestore)
+- Estrutura de pastas no bucket:
+  ```
+  formacao-professores/
+  ├── formations/thumbs/{formationId}/
+  ├── formations/videos/{formationId}/
+  ├── badges/{badgeId}/
+  └── users/{userId}/avatar/
+  ```
+- Formato de nomes: {timestamp}_{uuid4hex}.{ext}
+- NUNCA commitar google-services.json
 
 ## Comandos de Dev
 

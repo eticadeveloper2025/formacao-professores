@@ -214,6 +214,23 @@ docker-compose logs -f   # Ver logs em tempo real
 
 ---
 
+## 🔥 Configuração do Firebase
+
+Este app usa o Firebase Storage do projeto `midiasave-5c064` (mesmo do app BASTA) para hospedar vídeos e imagens das formações.
+
+### Passo a passo:
+1. Acesse o [Firebase Console](https://console.firebase.google.com/)
+2. Abra o projeto **midiasave-5c064**
+3. Vá em **Configurações do Projeto** → **Seus Apps**
+4. Clique em **Adicionar App** → **Android**
+5. Package name: `br.com.eticatec.formacaoprofessores`
+6. Baixe o `google-services.json`
+7. Copie para `app/android/app/google-services.json`
+
+> ⚠️ O arquivo `google-services.json` contém credenciais e NÃO deve ser commitado no Git.
+
+---
+
 ## 🔜 Roadmap — Fase 2
 
 - [ ] Notificações push (Firebase Cloud Messaging)

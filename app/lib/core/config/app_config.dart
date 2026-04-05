@@ -5,4 +5,6 @@ class AppConfig {
   static const Duration receiveTimeout = Duration(seconds: 30);
   static const String tokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
+  static const String firebaseStorageBucket = 'midiasave-5c064.firebasestorage.app';
+  static const String storageBasePath = 'formacao-professores';
 }

@@ -44,7 +44,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/modules/:id',
         builder: (_, state) {
           final id = int.parse(state.pathParameters['id']!);
-          return ModuleScreen(moduleId: id);
+          final extra = state.extra as Map<String, dynamic>?;
+          return ModuleScreen(
+            moduleId: id,
+            titulo: extra?['titulo'] as String?,
+            descricao: extra?['descricao'] as String?,
+            videoUrl: extra?['videoUrl'] as String?,
+          );
         },
       ),
       GoRoute(path: '/history', builder: (_, __) => const HistoryScreen()),

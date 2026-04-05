@@ -3,12 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/video_player_widget.dart';
 import '../../progress/services/progress_service.dart';
 
 class ModuleScreen extends ConsumerStatefulWidget {
   final int moduleId;
+  final String? titulo;
+  final String? descricao;
+  final String? videoUrl;
 
-  const ModuleScreen({super.key, required this.moduleId});
+  const ModuleScreen({
+    super.key,
+    required this.moduleId,
+    this.titulo,
+    this.descricao,
+    this.videoUrl,
+  });
 
   @override
   ConsumerState<ModuleScreen> createState() => _ModuleScreenState();
@@ -46,7 +56,7 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: const Text('Módulo'),
+        title: Text(widget.titulo ?? 'Módulo'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -57,35 +67,49 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              height: 220,
-              decoration: BoxDecoration(
-                color: AppTheme.secondary,
-                borderRadius: BorderRadius.circular(16),
+            if (widget.videoUrl != null && widget.videoUrl!.isNotEmpty)
+              VideoPlayerWidget(videoUrl: widget.videoUrl!)
+            else
+              Container(
+                width: double.infinity,
+                height: 220,
+                decoration: BoxDecoration(
+                  color: AppTheme.secondary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.play_circle_outline, color: AppTheme.orange, size: 64),
+                    SizedBox(height: 8),
+                    Text(
+                      'Vídeo do Módulo',
+                      style: TextStyle(color: AppTheme.textSecondary),
+                    ),
+                  ],
+                ),
               ),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.play_circle_outline, color: AppTheme.orange, size: 64),
-                  SizedBox(height: 8),
-                  Text(
-                    'Vídeo do Módulo',
-                    style: TextStyle(color: AppTheme.textSecondary),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    '(YouTube Player)',
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 24),
-            const Text(
-              'Descrição do módulo',
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
-            ),
+            if (widget.titulo != null)
+              Text(
+                widget.titulo!,
+                style: const TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            if (widget.titulo != null) const SizedBox(height: 12),
+            if (widget.descricao != null)
+              Text(
+                widget.descricao!,
+                style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+              )
+            else
+              const Text(
+                'Descrição do módulo',
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+              ),
             const SizedBox(height: 40),
             AppButton(
               label: 'Marcar como Concluído',
