@@ -44,45 +44,87 @@ git clone https://github.com/eticadeveloper2025/formacao-professores.git
 cd formacao-professores
 ```
 
-### 2. Suba o banco de dados e a API com Docker Compose
+---
 
-```bash
-docker-compose up -d
+## 🗂️ Opção A — Backend via Docker + Flutter Web no Chrome
+
+> Use esta opção se não tiver Android Studio ou dispositivo físico.
+
+### Passo 1 — Subir o banco de dados (Docker)
+
+> ⚠️ **Se você já tem PostgreSQL instalado localmente** rodando na porta 5432, o Docker vai conflitar.
+> Nesse caso, edite o `docker-compose.yml` e troque `"5432:5432"` por `"5433:5432"`,
+> e no `backend/.env` troque a porta na `DATABASE_URL` para `5433`.
+
+```powershell
+# Na raiz do projeto
+docker-compose up -d db
+
+# Aguarde ~10s e verifique se está pronto:
+docker-compose logs db | Select-String "ready to accept"
 ```
 
-> O PostgreSQL será iniciado e os scripts SQL em `database/` serão executados automaticamente (criação de tabelas + seed de dados).
+### Passo 2 — Rodar o Backend (Terminal 1)
 
-### 3. Verifique os containers
-
-```bash
-docker-compose ps
-docker-compose logs api
-```
-
-### 4. Acesse o Swagger UI
-
-Abra no navegador: **http://localhost:3000/api/docs**
-
-> Você verá todos os endpoints documentados e poderá testá-los diretamente na interface.
-
-### 5. Rode o backend em modo desenvolvimento (opcional)
-
-Se quiser rodar o backend fora do Docker:
-
-```bash
+```powershell
 cd backend
-cp .env.example .env
+
+# Primeira vez: copie o .env
+copy .env.example .env
+
 npm install
 npm run start:dev
 ```
 
-### 6. Rode o app Flutter
+Aguarde a mensagem:
+```
+🚀 Servidor rodando em http://localhost:3000
+📚 Swagger disponível em http://localhost:3000/api/docs
+```
+
+### Passo 3 — Rodar o Flutter Web (Terminal 2 — novo terminal)
 
 ```bash
 cd app
 flutter pub get
-flutter run
+flutter run -d chrome --web-browser-flag="--disable-web-security" --web-browser-flag="--user-data-dir=/tmp/chrome_dev_test"
 ```
+
+> As flags `--disable-web-security` são necessárias para o Flutter Web conseguir chamar a API em `localhost:3000` sem bloqueio de CORS.
+
+---
+
+## 🗂️ Opção B — Testar só o Backend com Swagger
+
+> Use esta opção para testar endpoints sem precisar rodar o Flutter.
+
+### Passo 1 — Subir banco e backend
+
+```powershell
+# Terminal 1 — raiz do projeto
+docker-compose up -d db
+
+# Terminal 1 — backend
+cd backend
+npm run start:dev
+```
+
+### Passo 2 — Acessar o Swagger UI
+
+Abra no navegador: **http://localhost:3000/api/docs**
+
+### Passo 3 — Fazer login e autenticar
+
+1. Clique em `POST /auth/login` → **Try it out** → cole o body:
+```json
+{
+  "email": "ana@escola.com",
+  "senha": "teste123"
+}
+```
+2. Copie o `accessToken` da resposta
+3. Clique em **Authorize 🔒** no topo → cole `Bearer {seu_token}` → **Authorize**
+4. Todos os endpoints protegidos agora estão disponíveis
 
 ---
 
@@ -122,11 +164,13 @@ cp backend/.env.example backend/.env
 
 | Variável | Descrição | Padrão |
 |---|---|---|
-| `DATABASE_URL` | URL de conexão PostgreSQL | `postgresql://postgres:postgres123@localhost:5432/formacao_professores` |
+| `DATABASE_URL` | URL de conexão PostgreSQL | `postgresql://postgres:postgres123@localhost:5433/formacao_professores` ¹ |
 | `JWT_SECRET` | Segredo para assinar os tokens JWT | `formacao-professores-secret-key-2025` |
 | `JWT_EXPIRES_IN` | Expiração do access token | `1h` |
 | `JWT_REFRESH_EXPIRES_IN` | Expiração do refresh token | `7d` |
 | `PORT` | Porta do servidor | `3000` |
+
+> ¹ Porta `5433` é usada quando já existe um PostgreSQL local rodando na `5432`. Ajuste conforme seu ambiente.
 
 ---
 
