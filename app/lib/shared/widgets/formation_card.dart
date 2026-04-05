@@ -31,77 +31,70 @@ class FormationCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.cardBackground,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 3,
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(18)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AspectRatio(
+            aspectRatio: 1.0,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: gradientColors[0].withOpacity(0.4),
+                    blurRadius: 18,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
                 child: formation.thumbUrl != null &&
                         formation.thumbUrl!.isNotEmpty
                     ? Image.network(
                         formation.thumbUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            _GradientThumb(colors: gradientColors),
-                      )
-                    : _GradientThumb(colors: gradientColors),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      formation.nome,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        height: 1.3,
-                      ),
-                    ),
-                    if (formation.descricao != null &&
-                        formation.descricao!.isNotEmpty) ...[
-                      const SizedBox(height: 3),
-                      Text(
-                        formation.descricao!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppTheme.textSecondary,
-                          fontSize: 10,
+                        errorBuilder: (_, __, ___) => _GradientThumb(
+                          colors: gradientColors,
+                          initials: _initials(formation.nome),
                         ),
+                      )
+                    : _GradientThumb(
+                        colors: gradientColors,
+                        initials: _initials(formation.nome),
                       ),
-                    ],
-                  ],
-                ),
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            formation.nome,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: AppTheme.textPrimary,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              height: 1.3,
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  static String _initials(String nome) {
+    final words = nome.trim().split(RegExp(r'\s+'));
+    if (words.isEmpty) return '?';
+    if (words.length == 1) return words[0][0].toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
   }
 }
 
 class _GradientThumb extends StatelessWidget {
   final List<Color> colors;
-  const _GradientThumb({required this.colors});
+  final String initials;
+  const _GradientThumb({required this.colors, required this.initials});
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +107,14 @@ class _GradientThumb extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Icon(
-          Icons.school_rounded,
-          color: Colors.white.withOpacity(0.85),
-          size: 48,
-        ),
+        child: Text(
+            initials,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 38,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
       ),
     );
   }

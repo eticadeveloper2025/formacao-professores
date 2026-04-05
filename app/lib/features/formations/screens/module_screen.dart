@@ -122,7 +122,8 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
             if (widget.descricao != null)
               Text(
                 widget.descricao!,
-                style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                style: const TextStyle(
+                    color: AppTheme.textSecondary, fontSize: 14),
               )
             else
               const Text(

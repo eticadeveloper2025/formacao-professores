@@ -18,6 +18,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             Container(
@@ -31,7 +32,8 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.school_rounded, color: Colors.white, size: 22),
+              child: const Icon(Icons.school_rounded,
+                  color: Colors.white, size: 22),
             ),
             const SizedBox(width: 10),
             const Text(
@@ -42,11 +44,30 @@ class HomeScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () async {
-              await ref.read(authProvider.notifier).logout();
-              if (context.mounted) context.go('/login');
-            },
+            icon: const Icon(Icons.chat_bubble_outline_rounded,
+                color: AppTheme.textSecondary),
+            onPressed: () {},
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: GestureDetector(
+              onTap: () async {
+                await ref.read(authProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: AppTheme.orange.withOpacity(0.2),
+                child: Text(
+                  firstName.isNotEmpty ? firstName[0].toUpperCase() : 'P',
+                  style: const TextStyle(
+                    color: AppTheme.orange,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -55,15 +76,15 @@ class HomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Olá, $firstName! 👋',
+                    'Olá, Prof. $firstName!',
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -75,8 +96,10 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            const NotificationSection(),
+            const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Row(
                 children: [
                   Expanded(
@@ -97,8 +120,7 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const NotificationSection(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(

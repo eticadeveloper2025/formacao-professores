@@ -52,37 +52,69 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 60),
+                // Ética Editora logo block
                 Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppTheme.orange.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(Icons.school, color: AppTheme.orange, size: 44),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 76,
+                        height: 76,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [AppTheme.orange, Color(0xFFFF9500)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.orange.withOpacity(0.4),
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.menu_book_rounded,
+                            color: Colors.white, size: 40),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'ÉTICA EDITORA',
+                        style: TextStyle(
+                          color: AppTheme.orange,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 const Center(
-                  child: Text(
-                    'Formação para\nProfessores',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Formação para',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        'PROFESSORES',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Center(
-                  child: Text(
-                    'Ética Editora',
-                    style: TextStyle(color: AppTheme.orange, fontSize: 14),
-                  ),
-                ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 40),
                 AppTextField(
                   label: 'Email',
                   controller: _emailController,
