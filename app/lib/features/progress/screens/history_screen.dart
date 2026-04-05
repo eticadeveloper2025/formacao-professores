@@ -2,20 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../models/user_progress.dart';
+import '../../../shared/widgets/app_end_drawer.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
 import '../providers/progress_provider.dart';
-
-// Paleta reutilizada para thumbnails de progresso
-const List<List<Color>> _kProgressGradients = [
-  [Color(0xFF00B4D8), Color(0xFF0077B6)],
-  [Color(0xFF2DC653), Color(0xFF007200)],
-  [Color(0xFFFF4D6D), Color(0xFF9D0208)],
-  [Color(0xFFFFB703), Color(0xFFE85D04)],
-  [Color(0xFF7209B7), Color(0xFF3A0CA3)],
-  [Color(0xFF4CC9F0), Color(0xFF4361EE)],
-  [Color(0xFFF72585), Color(0xFF7209B7)],
-  [Color(0xFF06D6A0), Color(0xFF118AB2)],
-];
+import '../widgets/formation_progress_ring.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -26,177 +16,118 @@ class HistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
+      endDrawer: const AppEndDrawer(),
       appBar: AppBar(
-        title: const Text('Histórico de Formação'),
+        backgroundColor: AppTheme.brandOrange,
+        elevation: 0,
+        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
+        title: const Text(
+          'FORMAÇÃO PARA PROFESSORES',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.6,
+          ),
+        ),
+        actions: [
+          Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              onPressed: () => Scaffold.of(ctx).openEndDrawer(),
+            ),
+          ),
+        ],
       ),
       body: progressAsync.when(
-        data: (progressList) => progressList.isEmpty
-            ? const Center(
-                child: Text(
-                  'Nenhuma formação iniciada ainda',
-                  style: TextStyle(color: AppTheme.textSecondary),
+        data: (progressList) {
+          if (progressList.isEmpty) {
+            return EmptyStateWidget(
+              icon: Icons.history_rounded,
+              title: 'Nenhuma formação iniciada',
+              subtitle:
+                  'Explore as coleções e comece sua jornada de desenvolvimento profissional.',
+              actionLabel: 'Explorar Formações',
+              onAction: () => context.go('/home'),
+            );
+          }
+
+          return ListView(
+            padding: const EdgeInsets.only(bottom: 32),
+            children: [
+              // Section title with orange underline
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Histórico de formação',
+                      style: TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: 48,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        color: AppTheme.brandOrange,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Acompanhe sua trajetória de desenvolvimento profissional.',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary.withOpacity(0.85),
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            : GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+              ),
+              const SizedBox(height: 16),
+              // 2-column progress ring grid
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.85,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 0.75,
                 ),
                 itemCount: progressList.length,
                 itemBuilder: (context, index) {
                   final p = progressList[index];
-                  return _ProgressCard(progress: p, index: index);
+                  final color = kRingColors[index % kRingColors.length];
+                  return GestureDetector(
+                    onTap: () => context.push('/formations/${p.formationId}'),
+                    child: FormationProgressRing(
+                      progress: p,
+                      ringColor: color,
+                    ),
+                  );
                 },
               ),
+            ],
+          );
+        },
         loading: () => const Center(
-            child: CircularProgressIndicator(color: AppTheme.orange)),
+            child: CircularProgressIndicator(color: AppTheme.brandOrange)),
         error: (e, _) => Center(
             child: Text('Erro: $e',
                 style: const TextStyle(color: AppTheme.error))),
-      ),
-    );
-  }
-}
-
-class _ProgressCard extends StatelessWidget {
-  final UserProgress progress;
-  final int index;
-
-  const _ProgressCard({required this.progress, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    final gradientColors =
-        _kProgressGradients[index % _kProgressGradients.length];
-    final percent = progress.percentual.clamp(0.0, 100.0);
-
-    return GestureDetector(
-      onTap: () =>
-          context.push('/formations/${progress.formationId}'),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.cardBackground,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: gradientColors[0].withOpacity(0.2),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Thumbnail area with progress ring overlay
-            Expanded(
-              flex: 3,
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(18)),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Background gradient or image
-                    progress.thumbUrl != null &&
-                            progress.thumbUrl!.isNotEmpty
-                        ? Image.network(progress.thumbUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                _gradientBg(gradientColors))
-                        : _gradientBg(gradientColors),
-                    // Dark overlay
-                    Container(
-                        color: Colors.black.withOpacity(0.35)),
-                    // Progress ring centered
-                    Center(
-                      child: _ProgressRingPainter(percent: percent),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // Formation name
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      progress.formationNome,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      '${progress.modulosConcluidos}/${progress.totalModulos} módulos',
-                      style: const TextStyle(
-                        color: AppTheme.textSecondary,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _gradientBg(List<Color> colors) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressRingPainter extends StatelessWidget {
-  final double percent;
-  const _ProgressRingPainter({required this.percent});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 62,
-      height: 62,
-      child: CustomPaint(
-        painter: _RingPainter(percent: percent),
-        child: Center(
-          child: Text(
-            '${percent.toInt()}%',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-        ),
       ),
     );
   }

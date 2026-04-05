@@ -48,20 +48,20 @@ class FormationCard extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child: formation.thumbUrl != null &&
-                        formation.thumbUrl!.isNotEmpty
-                    ? Image.network(
-                        formation.thumbUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _GradientThumb(
-                          colors: gradientColors,
-                          initials: _initials(formation.nome),
-                        ),
-                      )
-                    : _GradientThumb(
-                        colors: gradientColors,
-                        initials: _initials(formation.nome),
-                      ),
+                child:
+                    formation.thumbUrl != null && formation.thumbUrl!.isNotEmpty
+                        ? Image.network(
+                            formation.thumbUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _GradientThumb(
+                              colors: gradientColors,
+                              initials: _initials(formation.nome),
+                            ),
+                          )
+                        : _GradientThumb(
+                            colors: gradientColors,
+                            initials: _initials(formation.nome),
+                          ),
               ),
             ),
           ),
@@ -108,13 +108,13 @@ class _GradientThumb extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-            initials,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 38,
-              fontWeight: FontWeight.bold,
-            ),
+          initials,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 38,
+            fontWeight: FontWeight.bold,
           ),
+        ),
       ),
     );
   }
