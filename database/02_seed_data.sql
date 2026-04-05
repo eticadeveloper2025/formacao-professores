@@ -31,12 +31,12 @@ ON CONFLICT DO NOTHING;
 -- ============================================================
 -- Usuários de Teste
 -- Senha: teste123
--- Hash bcrypt: $2b$10$8KzaNdKIMyOkASCCIwpABeqXB.DDr9iMOPMiMOFmGMSOMh4gB8MJG
+-- Hash bcrypt gerado com: bcrypt.hash('teste123', 10)
 -- ============================================================
 INSERT INTO users (nome, email, senha_hash, school_id, nivel_acesso, access_code_id) VALUES
-    ('Ana Silva', 'ana@escola.com', '$2b$10$8KzaNdKIMyOkASCCIwpABeqXB.DDr9iMOPMiMOFmGMSOMh4gB8MJG', 1, 'professor', 6),
-    ('Carlos Souza', 'carlos@escola.com', '$2b$10$8KzaNdKIMyOkASCCIwpABeqXB.DDr9iMOPMiMOFmGMSOMh4gB8MJG', 2, 'coordenador', 7),
-    ('Maria Santos', 'maria@escola.com', '$2b$10$8KzaNdKIMyOkASCCIwpABeqXB.DDr9iMOPMiMOFmGMSOMh4gB8MJG', 3, 'professor', 8)
+    ('Ana Silva', 'ana@escola.com', '$2b$10$IlUqKhmIvx8DVV5RcUpkx.2g8iUKtonGBteKpA/vV/D1uaexfsqPm', 1, 'professor', 6),
+    ('Carlos Souza', 'carlos@escola.com', '$2b$10$IlUqKhmIvx8DVV5RcUpkx.2g8iUKtonGBteKpA/vV/D1uaexfsqPm', 2, 'coordenador', 7),
+    ('Maria Santos', 'maria@escola.com', '$2b$10$IlUqKhmIvx8DVV5RcUpkx.2g8iUKtonGBteKpA/vV/D1uaexfsqPm', 3, 'professor', 8)
 ON CONFLICT DO NOTHING;
 
 -- Marcar os códigos como usados pelos usuários
