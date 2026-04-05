@@ -58,7 +58,7 @@ class AppTheme {
         labelStyle: const TextStyle(color: textSecondary),
         hintStyle: const TextStyle(color: textSecondary),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: cardBackground,
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -66,13 +66,18 @@ class AppTheme {
         ),
       ),
       textTheme: const TextTheme(
-        headlineLarge: TextStyle(color: textPrimary, fontSize: 28, fontWeight: FontWeight.bold),
-        headlineMedium: TextStyle(color: textPrimary, fontSize: 22, fontWeight: FontWeight.bold),
-        titleLarge: TextStyle(color: textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
-        titleMedium: TextStyle(color: textPrimary, fontSize: 16, fontWeight: FontWeight.w500),
+        headlineLarge: TextStyle(
+            color: textPrimary, fontSize: 28, fontWeight: FontWeight.bold),
+        headlineMedium: TextStyle(
+            color: textPrimary, fontSize: 22, fontWeight: FontWeight.bold),
+        titleLarge: TextStyle(
+            color: textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
+        titleMedium: TextStyle(
+            color: textPrimary, fontSize: 16, fontWeight: FontWeight.w500),
         bodyLarge: TextStyle(color: textPrimary, fontSize: 16),
         bodyMedium: TextStyle(color: textSecondary, fontSize: 14),
-        labelLarge: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
+        labelLarge: TextStyle(
+            color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
       ),
     );
   }
