@@ -57,8 +57,7 @@ class NotificationTile extends StatelessWidget {
                         titulo,
                         style: TextStyle(
                           color: AppTheme.textPrimary,
-                          fontWeight:
-                              lida ? FontWeight.w500 : FontWeight.bold,
+                          fontWeight: lida ? FontWeight.w500 : FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
@@ -87,15 +86,6 @@ class NotificationTile extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: AppTheme.textSecondary, size: 20),
-          ],
         ),
       ),
     );
