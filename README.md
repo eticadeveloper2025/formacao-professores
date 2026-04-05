@@ -15,11 +15,12 @@ O **Formação para Professores** é um aplicativo mobile desenvolvido exclusiva
 
 ### Funcionalidades
 - 🔐 Login e cadastro com código de acesso exclusivo
-- 🏠 Home com notificações e grid de coleções
+- 🏠 Home com notificações, grid de coleções e card de formação em andamento
 - 📚 10 formações pedagógicas com módulos e vídeos
 - 📊 Histórico de progresso com percentual por formação
 - 🏆 Sistema de conquistas (badges desbloqueáveis)
 - 🔔 Notificações de atualizações e lembretes
+- ☰ Menu de navegação lateral (hambúrguer) em todas as telas autenticadas
 
 ---
 
@@ -182,6 +183,9 @@ formacao-professores/
 │   └── lib/
 │       ├── core/                 ← Tema, config, network
 │       ├── shared/               ← Widgets e models reutilizáveis
+│       │   └── widgets/
+│       │       ├── app_end_drawer.dart    ← Menu hambúrguer pós-login
+│       │       └── empty_state_widget.dart ← Estado vazio com CTA
 │       ├── features/             ← Funcionalidades por domínio
 │       │   ├── auth/             ← Login, Cadastro
 │       │   ├── home/             ← Home, Boas-vindas
@@ -229,7 +233,8 @@ A documentação completa dos endpoints está em:
 |---|---|---|
 | Background | `#1A1A2E` | Fundo principal |
 | Secondary | `#16213E` | Fundo secundário |
-| Orange | `#FF6B00` | Primária / botões |
+| **brandOrange** | `#F37127` | **Primária oficial (Design System v2)** |
+| ~~orange~~ | ~~`#FF6B00`~~ | ~~Legado — não usar em código novo~~ |
 | Green | `#00C853` | Sucesso / progresso |
 | Error | `#FF1744` | Erros |
 
