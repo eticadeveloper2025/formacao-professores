@@ -74,17 +74,36 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
                 width: double.infinity,
                 height: 220,
                 decoration: BoxDecoration(
-                  color: AppTheme.secondary,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF1F2B4A), Color(0xFF16213E)],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.play_circle_outline, color: AppTheme.orange, size: 64),
-                    SizedBox(height: 8),
-                    Text(
-                      'Vídeo do Módulo',
-                      style: TextStyle(color: AppTheme.textSecondary),
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppTheme.orange.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_circle_fill_rounded,
+                        color: AppTheme.orange,
+                        size: 48,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Vídeo em breve',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),

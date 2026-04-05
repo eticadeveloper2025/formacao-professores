@@ -21,21 +21,28 @@ class HomeScreen extends ConsumerWidget {
         title: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
-                color: AppTheme.orange.withOpacity(0.15),
+                gradient: const LinearGradient(
+                  colors: [AppTheme.orange, Color(0xFFFF9500)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.school, color: AppTheme.orange, size: 22),
+              child: const Icon(Icons.school_rounded, color: Colors.white, size: 22),
             ),
             const SizedBox(width: 10),
-            const Text('Formação', style: TextStyle(fontSize: 18)),
+            const Text(
+              'Formação',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout_rounded),
             onPressed: () async {
               await ref.read(authProvider.notifier).logout();
               if (context.mounted) context.go('/login');
