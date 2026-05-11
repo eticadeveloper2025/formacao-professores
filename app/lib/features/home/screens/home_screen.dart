@@ -6,7 +6,6 @@ import '../../../shared/widgets/app_end_drawer.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../progress/models/user_progress.dart';
 import '../../progress/providers/progress_provider.dart';
-import '../widgets/notification_section.dart';
 import '../widgets/formation_grid.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -69,19 +68,17 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const NotificationSection(),
-            const SizedBox(height: 8),
             // Card "Continue de onde parou"
             ref.watch(myProgressProvider).maybeWhen(
-              data: (list) {
-                final inProgress = list
-                    .where((p) => p.percentual > 0 && p.percentual < 100)
-                    .toList();
-                if (inProgress.isEmpty) return const SizedBox.shrink();
-                return _ContinueCard(progress: inProgress.first);
-              },
-              orElse: () => const SizedBox.shrink(),
-            ),
+                  data: (list) {
+                    final inProgress = list
+                        .where((p) => p.percentual > 0 && p.percentual < 100)
+                        .toList();
+                    if (inProgress.isEmpty) return const SizedBox.shrink();
+                    return _ContinueCard(progress: inProgress.first);
+                  },
+                  orElse: () => const SizedBox.shrink(),
+                ),
             const SizedBox(height: 8),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -183,3 +180,4 @@ class _ContinueCard extends StatelessWidget {
       ),
     );
   }
+}

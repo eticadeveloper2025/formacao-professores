@@ -10,6 +10,7 @@ import '../features/home/screens/home_screen.dart';
 import '../features/home/screens/welcome_screen.dart';
 import '../features/formations/screens/formation_detail_screen.dart';
 import '../features/formations/screens/module_screen.dart';
+import '../features/formations/screens/books_list_screen.dart';
 import '../features/progress/screens/history_screen.dart';
 import '../features/badges/screens/badges_screen.dart';
 
@@ -38,6 +39,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (_, state) {
           final id = int.parse(state.pathParameters['id']!);
           return FormationDetailScreen(formationId: id);
+        },
+      ),
+      GoRoute(
+        path: '/formations/:id/books',
+        builder: (_, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return BooksListScreen(formationId: id);
         },
       ),
       GoRoute(
