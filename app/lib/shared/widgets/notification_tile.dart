@@ -26,7 +26,8 @@ class NotificationTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           border: lida
               ? null
-              : Border.all(color: AppTheme.orange.withOpacity(0.35), width: 1),
+              : Border.all(
+                  color: AppTheme.brandOrange.withOpacity(0.35), width: 1),
         ),
         child: IntrinsicHeight(
           child: Row(
@@ -38,7 +39,7 @@ class NotificationTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: lida
                       ? AppTheme.textSecondary.withOpacity(0.25)
-                      : AppTheme.orange,
+                      : AppTheme.brandOrange,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(14),
                     bottomLeft: Radius.circular(14),
@@ -57,8 +58,7 @@ class NotificationTile extends StatelessWidget {
                         titulo,
                         style: TextStyle(
                           color: AppTheme.textPrimary,
-                          fontWeight:
-                              lida ? FontWeight.w500 : FontWeight.bold,
+                          fontWeight: lida ? FontWeight.w500 : FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
@@ -87,15 +87,6 @@ class NotificationTile extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: AppTheme.textSecondary, size: 20),
-          ],
         ),
       ),
     );

@@ -98,37 +98,37 @@ ON CONFLICT DO NOTHING;
 
 -- Módulos: Reforço Escolar Gamificado (formation_id = 1)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (1, 'Introdução à Gamificação', 'O que é gamificação e como ela transforma a aprendizagem', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (1, 'Introdução à Gamificação', 'O que é gamificação e como ela transforma a aprendizagem', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (1, 'Mecânicas de Jogos na Educação', 'Pontos, badges e rankings aplicados ao reforço escolar', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (1, 'Implementando na Prática', 'Criando seu primeiro plano de aula gamificado', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 
 -- Módulos: Paz nas Escolas (formation_id = 2)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (2, 'Cultura de Paz: Fundamentos', 'Princípios e valores para uma escola pacífica', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (2, 'Cultura de Paz: Fundamentos', 'Princípios e valores para uma escola pacífica', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (2, 'Mediação de Conflitos', 'Técnicas práticas para resolver conflitos no ambiente escolar', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (2, 'Projetos de Paz', 'Como criar e implementar projetos de paz na sua escola', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 
 -- Módulos: Basta! (formation_id = 3)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (3, 'Reconhecendo a Violência', 'Tipos de violência contra a mulher e como identificá-los', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (3, 'Reconhecendo a Violência', 'Tipos de violência contra a mulher e como identificá-los', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (3, 'O Papel do Educador', 'Como professores podem atuar na prevenção', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (3, 'Rede de Proteção', 'Encaminhamentos e recursos disponíveis na comunidade', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 
 -- Módulos: Feminicídio Zero (formation_id = 4)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (4, 'Contexto e Dados', 'Panorama do feminicídio no Brasil e no mundo', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (4, 'Contexto e Dados', 'Panorama do feminicídio no Brasil e no mundo', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (4, 'Legislação e Direitos', 'Lei Maria da Penha e outros marcos legais', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (4, 'Educação como Prevenção', 'Abordando o tema em sala de aula com responsabilidade', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 
 -- Módulos: Cultura Afro-Brasileira e Indígena (formation_id = 5)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (5, 'Raízes Africanas no Brasil', 'História e contribuições da cultura africana para o Brasil', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (5, 'Raízes Africanas no Brasil', 'História e contribuições da cultura africana para o Brasil', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (5, 'Povos Indígenas Brasileiros', 'Diversidade e saberes dos povos originários', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (5, 'Lei 10.639/03 na Prática', 'Como aplicar a lei em seu plano pedagógico', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 
 -- Módulos: Educação no Trânsito (formation_id = 6)
 INSERT INTO formation_modules (formation_id, titulo, descricao, video_url, ordem) VALUES
-    (6, 'Segurança Viária nas Escolas', 'Fundamentos da educação para o trânsito seguro', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1),
+    (6, 'Segurança Viária nas Escolas', 'Fundamentos da educação para o trânsito seguro', 'https://midiasave-5c064.web.app/videonovo.mp4', 1),
     (6, 'Dinâmicas e Atividades', 'Jogos e simulações para aprender sobre trânsito', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 2),
     (6, 'Projeto Escola Segura', 'Criando um projeto de educação no trânsito', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 3);
 

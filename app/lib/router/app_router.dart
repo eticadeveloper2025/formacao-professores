@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../core/config/app_config.dart';
 import '../features/auth/screens/login_screen.dart';
+import '../features/auth/screens/profile_screen.dart';
 import '../features/auth/screens/register_screen.dart';
 import '../features/auth/screens/success_screen.dart';
 import '../features/home/screens/home_screen.dart';
@@ -50,11 +50,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             titulo: extra?['titulo'] as String?,
             descricao: extra?['descricao'] as String?,
             videoUrl: extra?['videoUrl'] as String?,
+            ordem: extra?['ordem'] as int?,
+            totalModulos: extra?['totalModulos'] as int?,
           );
         },
       ),
       GoRoute(path: '/history', builder: (_, __) => const HistoryScreen()),
       GoRoute(path: '/badges', builder: (_, __) => const BadgesScreen()),
+      GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
     ],
   );
 });

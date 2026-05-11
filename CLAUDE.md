@@ -61,12 +61,61 @@ backend/src/
 ```dart
 background  = Color(0xFF1A1A2E)  // Fundo principal
 secondary   = Color(0xFF16213E)  // Fundo secundário / cards
-orange      = Color(0xFFFF6B00)  // Cor primária / botões CTA
+brandOrange = Color(0xFFF37127)  // Cor primária oficial (Design System v2) ← USE ESTA
+orange      = Color(0xFFFF6B00)  // ⚠️ LEGADO — não usar em código novo
 green       = Color(0xFF00C853)  // Sucesso / progresso
 error       = Color(0xFFFF1744)  // Erros
 textPrimary = Color(0xFFFFFFFF)  // Texto principal
 textSec     = Color(0xFFB0BEC5)  // Texto secundário
 ```
+
+## Padrão de AppBar (todas as telas pós-login)
+
+Todas as telas autenticadas devem usar exatamente este padrão:
+
+```dart
+// Telas raiz (home): sem botão voltar
+appBar: AppBar(
+  automaticallyImplyLeading: false,
+  backgroundColor: AppTheme.brandOrange,
+  elevation: 0,
+  centerTitle: true,
+  title: const Text(
+    'FORMAÇÃO PARA PROFESSORES',
+    style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.6),
+  ),
+  actions: [
+    Builder(
+      builder: (ctx) => IconButton(
+        icon: const Icon(Icons.menu_rounded, color: Colors.white),
+        onPressed: () => Scaffold.of(ctx).openEndDrawer(),
+      ),
+    ),
+  ],
+),
+
+// Telas internas: com botão voltar à esquerda
+leading: IconButton(
+  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+  onPressed: () => context.pop(),
+),
+```
+
+## Padrão de Navegação (menu hambúrguer)
+
+Usar `endDrawer: const AppEndDrawer()` no Scaffold de **todas** as telas pós-login.
+Não existe mais BottomNavigationBar nem ShellRoute.
+
+- `AppEndDrawer` → `app/lib/shared/widgets/app_end_drawer.dart`
+- Abre pelo `Builder` no `actions` do AppBar: `Scaffold.of(ctx).openEndDrawer()`
+- Itens: Início (`/home`), Histórico (`/history`), Conquistas (`/badges`), Perfil (`/profile`), Sair
+
+## Widgets Compartilhados
+
+| Widget | Arquivo | Uso |
+|---|---|---|
+| `AppEndDrawer` | `shared/widgets/app_end_drawer.dart` | Menu hambúrguer em todas as telas pós-login |
+| `EmptyStateWidget` | `shared/widgets/empty_state_widget.dart` | Estado vazio com ícone + título + CTA opcional |
 
 ## Padrão de Resposta da API
 

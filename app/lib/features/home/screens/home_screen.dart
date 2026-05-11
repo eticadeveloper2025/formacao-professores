@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_end_drawer.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../progress/models/user_progress.dart';
+import '../../progress/providers/progress_provider.dart';
 import '../widgets/notification_section.dart';
 import '../widgets/formation_grid.dart';
 
@@ -17,36 +20,27 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
+      endDrawer: const AppEndDrawer(),
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppTheme.orange, Color(0xFFFF9500)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.school_rounded, color: Colors.white, size: 22),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Formação',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ],
+        automaticallyImplyLeading: false,
+        backgroundColor: AppTheme.brandOrange,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'FORMAÇÃO PARA PROFESSORES',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.6,
+          ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () async {
-              await ref.read(authProvider.notifier).logout();
-              if (context.mounted) context.go('/login');
-            },
+          Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              onPressed: () => Scaffold.of(ctx).openEndDrawer(),
+            ),
           ),
         ],
       ),
@@ -55,15 +49,15 @@ class HomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Olá, $firstName! 👋',
+                    'Olá, Prof. $firstName!',
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -75,30 +69,20 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _QuickAccessButton(
-                      icon: Icons.history,
-                      label: 'Histórico',
-                      onTap: () => context.push('/history'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _QuickAccessButton(
-                      icon: Icons.emoji_events,
-                      label: 'Conquistas',
-                      onTap: () => context.push('/badges'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             const NotificationSection(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            // Card "Continue de onde parou"
+            ref.watch(myProgressProvider).maybeWhen(
+              data: (list) {
+                final inProgress = list
+                    .where((p) => p.percentual > 0 && p.percentual < 100)
+                    .toList();
+                if (inProgress.isEmpty) return const SizedBox.shrink();
+                return _ContinueCard(progress: inProgress.first);
+              },
+              orElse: () => const SizedBox.shrink(),
+            ),
+            const SizedBox(height: 8),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -118,39 +102,84 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _QuickAccessButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _QuickAccessButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
+class _ContinueCard extends StatelessWidget {
+  final UserProgress progress;
+  const _ContinueCard({required this.progress});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: AppTheme.cardBackground,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.orange.withOpacity(0.3)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: AppTheme.orange, size: 24),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: GestureDetector(
+        onTap: () => context.push('/formations/${progress.formationId}'),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.brandOrange.withOpacity(0.12),
+                AppTheme.cardBackground,
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
-          ],
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppTheme.brandOrange.withOpacity(0.4)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.brandOrange.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.menu_book_rounded,
+                  color: AppTheme.brandOrange,
+                  size: 22,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Continue de onde parou',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 11,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      progress.formationNome,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${progress.modulosConcluidos}/${progress.totalModulos} módulos · ${progress.percentual.toInt()}%',
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded,
+                  color: AppTheme.brandOrange),
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
       ),
     );
   }
-}
