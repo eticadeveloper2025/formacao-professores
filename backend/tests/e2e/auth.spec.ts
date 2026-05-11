@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
-
 test.describe('Auth — /auth/login', () => {
   test('login com credenciais válidas retorna 200 + tokens', async ({ request }) => {
-    const res = await request.post(`${BASE_URL}/auth/login`, {
+    const res = await request.post('/auth/login', {
       data: { email: 'ana@escola.com', senha: 'teste123' },
     });
 
@@ -18,7 +16,7 @@ test.describe('Auth — /auth/login', () => {
   });
 
   test('login com senha errada retorna 401', async ({ request }) => {
-    const res = await request.post(`${BASE_URL}/auth/login`, {
+    const res = await request.post('/auth/login', {
       data: { email: 'ana@escola.com', senha: 'senha_errada' },
     });
 
@@ -28,7 +26,7 @@ test.describe('Auth — /auth/login', () => {
   });
 
   test('login com email inexistente retorna 401', async ({ request }) => {
-    const res = await request.post(`${BASE_URL}/auth/login`, {
+    const res = await request.post('/auth/login', {
       data: { email: 'naoexiste@escola.com', senha: 'teste123' },
     });
 
@@ -36,18 +34,18 @@ test.describe('Auth — /auth/login', () => {
   });
 
   test('rota protegida sem token retorna 401', async ({ request }) => {
-    const res = await request.get(`${BASE_URL}/users/me`);
+    const res = await request.get('/users/me');
     expect(res.status()).toBe(401);
   });
 
   test('rota protegida com token válido retorna 200', async ({ request }) => {
-    const loginRes = await request.post(`${BASE_URL}/auth/login`, {
+    const loginRes = await request.post('/auth/login', {
       data: { email: 'ana@escola.com', senha: 'teste123' },
     });
     const { data } = await loginRes.json();
     const token = data.accessToken;
 
-    const meRes = await request.get(`${BASE_URL}/users/me`, {
+    const meRes = await request.get('/users/me', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
