@@ -8,6 +8,9 @@ import '../features/auth/screens/register_screen.dart';
 import '../features/auth/screens/success_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/home/screens/welcome_screen.dart';
+import '../features/formations/models/book.dart';
+import '../features/formations/screens/books_list_screen.dart';
+import '../features/formations/screens/book_viewer_screen.dart';
 import '../features/formations/screens/formation_detail_screen.dart';
 import '../features/formations/screens/module_screen.dart';
 import '../features/progress/screens/history_screen.dart';
@@ -53,6 +56,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ordem: extra?['ordem'] as int?,
             totalModulos: extra?['totalModulos'] as int?,
           );
+        },
+      ),
+      GoRoute(
+        path: '/books/:formationId',
+        builder: (_, state) {
+          final id = int.parse(state.pathParameters['formationId']!);
+          return BooksListScreen(formationId: id);
+        },
+      ),
+      GoRoute(
+        path: '/book-viewer',
+        builder: (_, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final book = extra['book'] as Book;
+          return BookViewerScreen(book: book);
         },
       ),
       GoRoute(path: '/history', builder: (_, __) => const HistoryScreen()),

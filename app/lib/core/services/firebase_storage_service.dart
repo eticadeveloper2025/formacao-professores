@@ -20,8 +20,9 @@ class FirebaseStorageService {
     required String contentType,
     Function(double)? onProgress,
   }) async {
-    if (_storage == null)
+    if (_storage == null) {
       throw UnsupportedError('Firebase Storage não disponível na web');
+    }
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final uuid4hex = const Uuid().v4().replaceAll('-', '').substring(0, 4);
     final ext = contentType.contains('image') ? 'jpg' : 'mp4';
@@ -59,8 +60,9 @@ class FirebaseStorageService {
 
   /// Obtém URL de download de um arquivo do Storage
   Future<String> getDownloadUrl(String path) async {
-    if (_storage == null)
+    if (_storage == null) {
       throw UnsupportedError('Firebase Storage não disponível na web');
+    }
     final ref = _storage!.ref().child(path);
     return await ref.getDownloadURL();
   }

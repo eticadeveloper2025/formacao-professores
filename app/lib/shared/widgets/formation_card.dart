@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../features/formations/models/formation.dart';
 
-// Paleta de gradientes para thumbnails das formações
+// Paleta de gradientes para thumbnails das formações (fallback)
 const List<List<Color>> _kFormationGradients = [
   [Color(0xFF00B4D8), Color(0xFF0077B6)],
   [Color(0xFF2DC653), Color(0xFF007200)],
@@ -13,6 +13,29 @@ const List<List<Color>> _kFormationGradients = [
   [Color(0xFFF72585), Color(0xFF7209B7)],
   [Color(0xFF06D6A0), Color(0xFF118AB2)],
 ];
+
+/// Mapeamento de keywords do nome da formação → logo local
+String? _localLogoAsset(String nome) {
+  final n = nome.toLowerCase();
+  if (n.contains('reforço')) return 'assets/images/logo-REFORCO-maior.png';
+  if (n.contains('paz')) return 'assets/images/logo-PAZ-maior.png';
+  if (n.contains('basta') || n.contains('violência contra a mulher')) {
+    return 'assets/images/logo-BASTA-maior.png';
+  }
+  if (n.contains('feminicídio'))
+    return 'assets/images/logo-FEMINICIDIO-maior.png';
+  if (n.contains('afro') || n.contains('indígen')) {
+    return 'assets/images/logo-AFRO-maior.png';
+  }
+  if (n.contains('trânsito')) return 'assets/images/logo-TRANSITO-maior.png';
+  if (n.contains('energia')) return 'assets/images/logo-ENERGIA-maior.png';
+  if (n.contains('dengue')) return 'assets/images/logo-DENGUE-maior.png';
+  if (n.contains('empreendedor') || n.contains('adolescência')) {
+    return 'assets/images/logo-ADOL-maior.png';
+  }
+  if (n.contains('ambiental')) return 'assets/images/logo-AMBIENT-maior.png';
+  return null;
+}
 
 class FormationCard extends StatelessWidget {
   final Formation formation;
@@ -28,6 +51,7 @@ class FormationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final gradientColors =
         _kFormationGradients[formation.id % _kFormationGradients.length];
+    final localLogo = _localLogoAsset(formation.nome);
 
     return GestureDetector(
       onTap: onTap,
@@ -48,8 +72,17 @@ class FormationCard extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child:
-                    formation.thumbUrl != null && formation.thumbUrl!.isNotEmpty
+                child: localLogo != null
+                    ? Image.asset(
+                        localLogo,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _GradientThumb(
+                          colors: gradientColors,
+                          initials: _initials(formation.nome),
+                        ),
+                      )
+                    : (formation.thumbUrl != null &&
+                            formation.thumbUrl!.isNotEmpty
                         ? Image.network(
                             formation.thumbUrl!,
                             fit: BoxFit.cover,
@@ -61,7 +94,7 @@ class FormationCard extends StatelessWidget {
                         : _GradientThumb(
                             colors: gradientColors,
                             initials: _initials(formation.nome),
-                          ),
+                          )),
               ),
             ),
           ),

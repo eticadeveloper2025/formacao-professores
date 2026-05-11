@@ -122,8 +122,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Informe o email';
+                              }
                               if (!v.contains('@')) return 'Email inválido';
                               return null;
                             },
@@ -134,8 +135,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             controller: _senhaController,
                             isPassword: true,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Informe a senha';
+                              }
                               if (v.length < 6) return 'Senha muito curta';
                               return null;
                             },

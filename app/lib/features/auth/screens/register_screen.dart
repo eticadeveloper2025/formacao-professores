@@ -191,8 +191,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Informe o email';
+                              }
                               if (!v.contains('@')) return 'Email inválido';
                               return null;
                             },
@@ -201,7 +202,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           // Escola dropdown
                           schoolsAsync.when(
                             data: (schools) => DropdownButtonFormField<int>(
-                              value: _selectedSchoolId,
+                              initialValue: _selectedSchoolId,
                               decoration: _pillDecoration('Escola'),
                               dropdownColor: AppTheme.secondary,
                               style: const TextStyle(
@@ -225,15 +226,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     strokeWidth: 2),
                               ),
                             ),
-                            error: (_, __) => Text(
+                            error: (_, __) => const Text(
                               'Erro ao carregar escolas',
-                              style: const TextStyle(color: AppTheme.error),
+                              style: TextStyle(color: AppTheme.error),
                             ),
                           ),
                           const SizedBox(height: 14),
                           // Nível de acesso dropdown
                           DropdownButtonFormField<String>(
-                            value: _selectedNivel,
+                            initialValue: _selectedNivel,
                             decoration: _pillDecoration('Nível de acesso'),
                             dropdownColor: AppTheme.secondary,
                             style: const TextStyle(
@@ -252,10 +253,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             controller: _senhaController,
                             isPassword: true,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Informe a senha';
-                              if (v.length < 6)
+                              }
+                              if (v.length < 6) {
                                 return 'Senha deve ter no mínimo 6 caracteres';
+                              }
                               return null;
                             },
                           ),
@@ -265,8 +268,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             controller: _confirmSenhaController,
                             isPassword: true,
                             validator: (v) {
-                              if (v != _senhaController.text)
+                              if (v != _senhaController.text) {
                                 return 'Senhas não conferem';
+                              }
                               return null;
                             },
                           ),
