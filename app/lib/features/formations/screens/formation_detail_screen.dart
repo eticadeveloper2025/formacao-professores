@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_end_drawer.dart';
 import '../../../shared/widgets/circular_progress_widget.dart';
 import '../models/formation_module.dart';
 import '../../progress/providers/progress_provider.dart';
@@ -18,12 +19,33 @@ class FormationDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
+      endDrawer: const AppEndDrawer(),
       appBar: AppBar(
-        title: const Text('Módulos da Formação'),
+        backgroundColor: AppTheme.brandOrange,
+        elevation: 0,
+        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
+        title: const Text(
+          'FORMAÇÃO PARA PROFESSORES',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.6,
+          ),
+        ),
+        actions: [
+          Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              onPressed: () => Scaffold.of(ctx).openEndDrawer(),
+            ),
+          ),
+        ],
       ),
       body: progressAsync.when(
         data: (progress) {
@@ -79,6 +101,8 @@ class FormationDetailScreen extends ConsumerWidget {
                           'titulo': module.titulo,
                           'descricao': module.descricao,
                           'videoUrl': module.videoUrl,
+                          'ordem': module.ordem,
+                          'totalModulos': modulos.length,
                         },
                       ),
                     );
@@ -89,10 +113,11 @@ class FormationDetailScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(
-          child: CircularProgressIndicator(color: AppTheme.orange),
+          child: CircularProgressIndicator(color: AppTheme.brandOrange),
         ),
         error: (e, _) => Center(
-          child: Text('Erro: $e', style: const TextStyle(color: AppTheme.error)),
+          child:
+              Text('Erro: $e', style: const TextStyle(color: AppTheme.error)),
         ),
       ),
     );

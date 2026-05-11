@@ -18,6 +18,14 @@ app/.flutter-plugins-dependencies
 # Logs
 *.log
 npm-debug.log*
+backend_err.txt
+backend_out.txt
+
+# Test results
+backend/test-results/
+
+# Flutter metadata
+app/.metadata
 
 # OS files
 .DS_Store

@@ -20,9 +20,9 @@ class BadgeCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: conquistado
             ? Border.all(color: AppTheme.orange, width: 2)
-            : null,
+            : Border.all(color: Colors.white.withOpacity(0.06), width: 1),
       ),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -30,12 +30,33 @@ class BadgeCard extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Icon(
-                Icons.emoji_events,
-                size: 48,
-                color: conquistado ? AppTheme.orange : AppTheme.textSecondary.withOpacity(0.3),
+                Icons.emoji_events_rounded,
+                size: 44,
+                color: conquistado
+                    ? AppTheme.orange
+                    : AppTheme.textSecondary.withOpacity(0.18),
               ),
               if (!conquistado)
-                const Icon(Icons.lock, size: 20, color: AppTheme.textSecondary),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondary,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.textSecondary.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.lock,
+                      size: 12,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 8),
@@ -45,9 +66,12 @@ class BadgeCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: conquistado ? AppTheme.textPrimary : AppTheme.textSecondary,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+              color: conquistado
+                  ? AppTheme.textPrimary
+                  : AppTheme.textSecondary.withOpacity(0.55),
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              height: 1.3,
             ),
           ),
         ],

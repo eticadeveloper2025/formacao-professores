@@ -30,12 +30,14 @@ class ModuleCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: module.completed
                     ? AppTheme.green.withOpacity(0.15)
-                    : AppTheme.orange.withOpacity(0.15),
+                    : AppTheme.brandOrange.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                module.completed ? Icons.check_circle : Icons.play_circle_outline,
-                color: module.completed ? AppTheme.green : AppTheme.orange,
+                module.completed
+                    ? Icons.check_circle
+                    : Icons.play_circle_outline,
+                color: module.completed ? AppTheme.green : AppTheme.brandOrange,
                 size: 26,
               ),
             ),
@@ -57,7 +59,8 @@ class ModuleCard extends StatelessWidget {
                       module.descricao!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                      style: const TextStyle(
+                          color: AppTheme.textSecondary, fontSize: 12),
                     ),
                 ],
               ),

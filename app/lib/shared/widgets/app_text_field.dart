@@ -38,18 +38,20 @@ class _AppTextFieldState extends State<AppTextField> {
       keyboardType: widget.keyboardType,
       validator: widget.validator,
       enabled: widget.enabled,
-      style: const TextStyle(color: AppTheme.textPrimary),
+      style: const TextStyle(color: AppTheme.textPrimary, fontSize: 15),
       decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
+        hintText: widget.hint ?? widget.label,
         prefixIcon: widget.prefixIcon != null
-            ? Icon(widget.prefixIcon, color: AppTheme.textSecondary)
+            ? Icon(widget.prefixIcon, color: AppTheme.textSecondary, size: 20)
             : null,
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
-                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                  _obscureText
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
                   color: AppTheme.textSecondary,
+                  size: 20,
                 ),
                 onPressed: () => setState(() => _obscureText = !_obscureText),
               )

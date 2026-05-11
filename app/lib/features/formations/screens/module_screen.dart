@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_end_drawer.dart';
 import '../../../shared/widgets/video_player_widget.dart';
 import '../../progress/services/progress_service.dart';
 
@@ -11,6 +12,8 @@ class ModuleScreen extends ConsumerStatefulWidget {
   final String? titulo;
   final String? descricao;
   final String? videoUrl;
+  final int? ordem;
+  final int? totalModulos;
 
   const ModuleScreen({
     super.key,
@@ -18,6 +21,8 @@ class ModuleScreen extends ConsumerStatefulWidget {
     this.titulo,
     this.descricao,
     this.videoUrl,
+    this.ordem,
+    this.totalModulos,
   });
 
   @override
@@ -55,12 +60,45 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.background,
+      endDrawer: const AppEndDrawer(),
       appBar: AppBar(
-        title: Text(widget.titulo ?? 'Módulo'),
+        backgroundColor: AppTheme.brandOrange,
+        elevation: 0,
+        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Colors.white, size: 20),
           onPressed: () => context.pop(),
         ),
+        title: Column(
+          children: [
+            const Text(
+              'FORMAÇÃO PARA PROFESSORES',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.6,
+              ),
+            ),
+            if (widget.ordem != null && widget.totalModulos != null)
+              Text(
+                'Módulo ${widget.ordem} de ${widget.totalModulos}',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 11,
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              onPressed: () => Scaffold.of(ctx).openEndDrawer(),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -74,17 +112,36 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
                 width: double.infinity,
                 height: 220,
                 decoration: BoxDecoration(
-                  color: AppTheme.secondary,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF1F2B4A), Color(0xFF16213E)],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.play_circle_outline, color: AppTheme.orange, size: 64),
-                    SizedBox(height: 8),
-                    Text(
-                      'Vídeo do Módulo',
-                      style: TextStyle(color: AppTheme.textSecondary),
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppTheme.brandOrange.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_circle_fill_rounded,
+                        color: AppTheme.brandOrange,
+                        size: 48,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Vídeo em breve',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
@@ -103,7 +160,8 @@ class _ModuleScreenState extends ConsumerState<ModuleScreen> {
             if (widget.descricao != null)
               Text(
                 widget.descricao!,
-                style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                style: const TextStyle(
+                    color: AppTheme.textSecondary, fontSize: 14),
               )
             else
               const Text(

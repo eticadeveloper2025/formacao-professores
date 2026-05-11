@@ -1,0 +1,30 @@
+databases:
+  - name: formacao-professores-db
+    databaseName: formacao_professores
+    user: formacao_user
+    plan: free
+
+services:
+  - type: web
+    name: formacao-professores-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node scripts/init-db.js && node dist/main.js
+    healthCheckPath: /api/docs
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: formacao-professores-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
