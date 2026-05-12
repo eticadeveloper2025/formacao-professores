@@ -11,6 +11,7 @@ import '../features/home/screens/welcome_screen.dart';
 import '../features/formations/screens/formation_detail_screen.dart';
 import '../features/formations/screens/module_screen.dart';
 import '../features/formations/screens/books_list_screen.dart';
+import '../features/formations/screens/pdf_book_viewer_screen.dart';
 import '../features/progress/screens/history_screen.dart';
 import '../features/badges/screens/badges_screen.dart';
 
@@ -66,6 +67,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/history', builder: (_, __) => const HistoryScreen()),
       GoRoute(path: '/badges', builder: (_, __) => const BadgesScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
+      GoRoute(
+        path: '/book-viewer',
+        builder: (_, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return PdfBookViewerScreen(
+            assetPath: extra['assetPath'] as String,
+            title: extra['title'] as String,
+          );
+        },
+      ),
     ],
   );
 });

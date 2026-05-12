@@ -6,9 +6,13 @@ import '../../../shared/widgets/app_end_drawer.dart';
 class _Book {
   final String title;
   final String asset;
-  final String? pdfUrl;
+  final String pdfAsset;
 
-  const _Book({required this.title, required this.asset, this.pdfUrl});
+  const _Book({
+    required this.title,
+    required this.asset,
+    required this.pdfAsset,
+  });
 }
 
 class _BookSection {
@@ -25,22 +29,62 @@ class BooksListScreen extends StatelessWidget {
 
   static const List<_BookSection> _sections = [
     _BookSection(category: 'Anos Iniciais', books: [
-      _Book(title: 'Vol. 1', asset: 'assets/images/anosiniciais.png'),
-      _Book(title: 'Vol. 2', asset: 'assets/images/anosiniciais2.png'),
-      _Book(title: 'Vol. 3', asset: 'assets/images/anosiniciais3.png'),
+      _Book(
+        title: 'Aluna',
+        asset: 'assets/images/anosiniciais.png',
+        pdfAsset: 'assets/pdfs/basta/anos_iniciais_mulher.pdf',
+      ),
+      _Book(
+        title: 'Aluno',
+        asset: 'assets/images/anosiniciais2.png',
+        pdfAsset: 'assets/pdfs/basta/anos_iniciais_homem.pdf',
+      ),
+      _Book(
+        title: 'Professor',
+        asset: 'assets/images/anosiniciais3.png',
+        pdfAsset: 'assets/pdfs/basta/anos_iniciais_professor.pdf',
+      ),
     ]),
     _BookSection(category: 'Anos Finais', books: [
-      _Book(title: 'Vol. 1', asset: 'assets/images/anosfinais.png'),
-      _Book(title: 'Vol. 2', asset: 'assets/images/anosfinais2.png'),
-      _Book(title: 'Vol. 3', asset: 'assets/images/anosfinais3.png'),
+      _Book(
+        title: 'Aluna',
+        asset: 'assets/images/anosfinais.png',
+        pdfAsset: 'assets/pdfs/basta/anos_finais_mulher.pdf',
+      ),
+      _Book(
+        title: 'Aluno',
+        asset: 'assets/images/anosfinais2.png',
+        pdfAsset: 'assets/pdfs/basta/anos_finais_homem.pdf',
+      ),
+      _Book(
+        title: 'Professor',
+        asset: 'assets/images/anosfinais3.png',
+        pdfAsset: 'assets/pdfs/basta/anos_finais_professor.pdf',
+      ),
     ]),
     _BookSection(category: 'Ensino Médio', books: [
-      _Book(title: 'Vol. 1', asset: 'assets/images/ensinomedio.png'),
-      _Book(title: 'Vol. 2', asset: 'assets/images/ensinomedio2.png'),
-      _Book(title: 'Vol. 3', asset: 'assets/images/ensinomedio3.png'),
+      _Book(
+        title: 'Aluna',
+        asset: 'assets/images/ensinomedio.png',
+        pdfAsset: 'assets/pdfs/basta/ensino_medio_mulher.pdf',
+      ),
+      _Book(
+        title: 'Aluno',
+        asset: 'assets/images/ensinomedio2.png',
+        pdfAsset: 'assets/pdfs/basta/ensino_medio_homem.pdf',
+      ),
+      _Book(
+        title: 'Professor',
+        asset: 'assets/images/ensinomedio3.png',
+        pdfAsset: 'assets/pdfs/basta/ensino_medio_professor.pdf',
+      ),
     ]),
     _BookSection(category: 'EJA', books: [
-      _Book(title: 'Vol. 1', asset: 'assets/images/ejafoto.png'),
+      _Book(
+        title: 'Professor',
+        asset: 'assets/images/ejafoto.png',
+        pdfAsset: 'assets/pdfs/basta/eja_professor.pdf',
+      ),
     ]),
   ];
 
@@ -81,16 +125,13 @@ class BooksListScreen extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             color: AppTheme.secondary,
-            child: const Text(
-              'BASTA!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppTheme.textPrimary,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+            child: Center(
+              child: Image.asset(
+                'assets/images/BASTA-logo2.png',
+                height: 56,
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -124,12 +165,13 @@ class BooksListScreen extends StatelessWidget {
                           final book = section.books[bookIndex];
                           return GestureDetector(
                             onTap: () {
-                              if (book.pdfUrl != null) {
-                                context.push(
-                                  '/book-viewer',
-                                  extra: {'pdfUrl': book.pdfUrl},
-                                );
-                              }
+                              context.push(
+                                '/book-viewer',
+                                extra: {
+                                  'assetPath': book.pdfAsset,
+                                  'title': book.title,
+                                },
+                              );
                             },
                             child: Container(
                               width: 100,
