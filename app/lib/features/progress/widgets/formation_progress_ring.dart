@@ -3,6 +3,19 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../../../core/theme/app_theme.dart';
 import '../models/user_progress.dart';
 
+const Map<int, String> _kFormationLogos = {
+  1: 'assets/images/logo-REFORCO-maior.png',
+  2: 'assets/images/logo-PAZ-maior.png',
+  3: 'assets/images/logo-BASTA-maior.png',
+  4: 'assets/images/logo-FEMINICIDIO-maior.png',
+  5: 'assets/images/logo-AFRO-maior.png',
+  6: 'assets/images/logo-TRANSITO-maior.png',
+  7: 'assets/images/logo-ENERGIA-maior.png',
+  8: 'assets/images/logo-DENGUE-maior.png',
+  9: 'assets/images/logo-ADOL-maior.png',
+  10: 'assets/images/logo-AMBIENT-maior.png',
+};
+
 // Vivid ring colors cycling by formation index
 const List<Color> kRingColors = [
   Color(0xFFFF6FC8), // pink
@@ -43,6 +56,7 @@ class FormationProgressRing extends StatelessWidget {
           animation: true,
           animationDuration: 900,
           center: _LogoPlaceholder(
+            formationId: progress.formationId,
             thumbUrl: progress.thumbUrl,
             accentColor: ringColor,
           ),
@@ -77,39 +91,60 @@ class FormationProgressRing extends StatelessWidget {
 }
 
 class _LogoPlaceholder extends StatelessWidget {
+  final int formationId;
   final String? thumbUrl;
   final Color accentColor;
 
-  const _LogoPlaceholder({required this.thumbUrl, required this.accentColor});
+  const _LogoPlaceholder({
+    required this.formationId,
+    required this.thumbUrl,
+    required this.accentColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     const double size = 94;
-    const double radius = 13;
+    final logoAsset = _kFormationLogos[formationId];
 
+    // 1. Local asset (same images as home screen)
+    if (logoAsset != null) {
+      return ClipOval(
+        child: Image.asset(
+          logoAsset,
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _networkOrPlaceholder(size),
+        ),
+      );
+    }
+
+    // 2. Remote thumb_url as fallback
+    return _networkOrPlaceholder(size);
+  }
+
+  Widget _networkOrPlaceholder(double size) {
     if (thumbUrl != null && thumbUrl!.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
+      return ClipOval(
         child: Image.network(
           thumbUrl!,
           width: size,
           height: size,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _placeholder(size, radius),
+          errorBuilder: (_, __, ___) => _placeholder(size),
         ),
       );
     }
-
-    return _placeholder(size, radius);
+    return _placeholder(size);
   }
 
-  Widget _placeholder(double size, double radius) {
+  Widget _placeholder(double size) {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E2A47),
-        borderRadius: BorderRadius.circular(radius),
+      decoration: const BoxDecoration(
+        color: Color(0xFF1E2A47),
+        shape: BoxShape.circle,
       ),
       child: Icon(
         Icons.school_rounded,
