@@ -1,21 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:video_player/video_player.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_end_drawer.dart';
-import '../../../shared/widgets/circular_progress_widget.dart';
-import '../models/formation_module.dart';
-import '../../progress/providers/progress_provider.dart';
-import '../widgets/module_card.dart';
 
-class FormationDetailScreen extends ConsumerWidget {
+const Map<int, String> _kFormationLogos = {
+  1: 'assets/images/logo-REFORCO-maior.png',
+  2: 'assets/images/logo-PAZ-maior.png',
+  3: 'assets/images/logo-BASTA-maior.png',
+  4: 'assets/images/logo-FEMINICIDIO-maior.png',
+  5: 'assets/images/logo-AFRO-maior.png',
+  6: 'assets/images/logo-TRANSITO-maior.png',
+  7: 'assets/images/logo-ENERGIA-maior.png',
+  8: 'assets/images/logo-DENGUE-maior.png',
+  9: 'assets/images/logo-ADOL-maior.png',
+  10: 'assets/images/logo-AMBIENT-maior.png',
+};
+
+class FormationDetailScreen extends ConsumerStatefulWidget {
   final int formationId;
 
   const FormationDetailScreen({super.key, required this.formationId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final progressAsync = ref.watch(formationProgressProvider(formationId));
+  ConsumerState<FormationDetailScreen> createState() =>
+      _FormationDetailScreenState();
+}
+
+class _FormationDetailScreenState extends ConsumerState<FormationDetailScreen> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset('assets/images/SID.mp4')
+      ..initialize().then((_) {
+        if (mounted) setState(() => _initialized = true);
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final logo =
+        _kFormationLogos[widget.formationId] ?? 'assets/images/logo-BASTA-maior.png';
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -47,101 +82,87 @@ class FormationDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: progressAsync.when(
-        data: (progress) {
-          final modulos = (progress['modulos'] as List<dynamic>);
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                color: AppTheme.secondary,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CircularProgressWidget(
-                      percent: (progress['percentual'] as num).toDouble(),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${progress['concluidos']} / ${progress['total']} módulos',
-                          style: const TextStyle(
-                            color: AppTheme.textPrimary,
-                            fontSize: 16,
-                          ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Formation logo
+            Image.asset(
+              logo,
+              height: 150,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+            const SizedBox(height: 20),
+            // Video player
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: _initialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: GestureDetector(
+                        onTap: () => setState(() {
+                          _controller.value.isPlaying
+                              ? _controller.pause()
+                              : _controller.play();
+                        }),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            VideoPlayer(_controller),
+                            ValueListenableBuilder<VideoPlayerValue>(
+                              valueListenable: _controller,
+                              builder: (_, value, __) => value.isPlaying
+                                  ? const SizedBox.shrink()
+                                  : Container(
+                                      color: Colors.black38,
+                                      child: const Icon(
+                                        Icons.play_circle_fill_rounded,
+                                        color: Colors.white,
+                                        size: 64,
+                                      ),
+                                    ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Concluídos',
-                          style: TextStyle(color: AppTheme.textSecondary),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () =>
-                        context.push('/formations/$formationId/books'),
-                    icon: const Icon(Icons.menu_book_rounded, size: 18),
-                    label: const Text(
-                      'ACESSAR LIVROS',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.brandOrange,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    )
+                  : Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppTheme.secondary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                            color: AppTheme.brandOrange),
                       ),
                     ),
+            ),
+            const SizedBox(height: 24),
+            // ACESSAR LIVROS button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () =>
+                    context.push('/formations/${widget.formationId}/books'),
+                icon: const Icon(Icons.menu_book_rounded, size: 18),
+                label: const Text(
+                  'ACESSAR LIVROS',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.brandOrange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: modulos.length,
-                  itemBuilder: (context, index) {
-                    final m = modulos[index] as Map<String, dynamic>;
-                    final module = FormationModule(
-                      id: m['module_id'] as int,
-                      titulo: m['titulo'] as String,
-                      videoUrl: m['video_url'] as String?,
-                      ordem: m['ordem'] as int,
-                      completed: m['completed'] as bool? ?? false,
-                    );
-                    return ModuleCard(
-                      module: module,
-                      onTap: () => context.push(
-                        '/modules/${module.id}',
-                        extra: {
-                          'titulo': module.titulo,
-                          'descricao': module.descricao,
-                          'videoUrl': module.videoUrl,
-                          'ordem': module.ordem,
-                          'totalModulos': modulos.length,
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppTheme.brandOrange),
-        ),
-        error: (e, _) => Center(
-          child:
-              Text('Erro: $e', style: const TextStyle(color: AppTheme.error)),
+            ),
+          ],
         ),
       ),
     );
