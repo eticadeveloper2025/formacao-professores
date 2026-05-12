@@ -166,10 +166,11 @@ class BooksListScreen extends StatelessWidget {
                           return GestureDetector(
                             onTap: () {
                               context.push(
-                                '/book-viewer',
+                                '/book-pages',
                                 extra: {
                                   'assetPath': book.pdfAsset,
-                                  'title': book.title,
+                                  'title':
+                                      '${book.title} – ${section.category}',
                                 },
                               );
                             },
