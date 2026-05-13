@@ -49,8 +49,8 @@ class _FormationDetailScreenState extends ConsumerState<FormationDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final logo =
-        _kFormationLogos[widget.formationId] ?? 'assets/images/logo-BASTA-maior.png';
+    final logo = _kFormationLogos[widget.formationId] ??
+        'assets/images/logo-BASTA-maior.png';
 
     return Scaffold(
       backgroundColor: AppTheme.background,
