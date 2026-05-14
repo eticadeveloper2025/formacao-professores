@@ -272,7 +272,7 @@ Este app usa o Firebase Storage do projeto `midiasave-5c064` (mesmo do app BASTA
 2. Abra o projeto **midiasave-5c064**
 3. Vá em **Configurações do Projeto** → **Seus Apps**
 4. Clique em **Adicionar App** → **Android**
-5. Package name: `br.com.eticatec.formacaoprofessores`
+5. Package name: `br.com.eticatec.formacaoprofessore`
 6. Baixe o `google-services.json`
 7. Copie para `app/android/app/google-services.json`
 
