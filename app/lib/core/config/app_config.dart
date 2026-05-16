@@ -1,6 +1,6 @@
 class AppConfig {
   // Set via --dart-define=API_BASE_URL=https://your-api.onrender.com at build time.
-  // Default points to the production Render API for real Android devices.
+  // Default points to the production Render API (override with --dart-define for local dev).
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
     defaultValue: 'https://formacao-professores-api.onrender.com',
