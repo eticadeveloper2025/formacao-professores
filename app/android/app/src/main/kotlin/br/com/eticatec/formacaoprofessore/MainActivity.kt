@@ -1,4 +1,4 @@
-package br.com.eticatec.formacao_professores
+package br.com.eticatec.formacaoprofessore
 
 import io.flutter.embedding.android.FlutterActivity
 

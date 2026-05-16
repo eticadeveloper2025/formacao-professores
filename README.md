@@ -253,7 +253,7 @@ npm run test             # Testes
 cd app
 flutter pub get          # Instalar dependências
 flutter run              # Rodar no dispositivo/emulador
-flutter build apk        # Build APK Android
+flutter build apk --release --dart-define=API_BASE_URL=https://formacao-professores-api.onrender.com  # Build APK Android
 
 # Docker
 docker-compose up -d     # Subir todos os serviços

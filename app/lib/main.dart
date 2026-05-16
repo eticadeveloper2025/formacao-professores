@@ -7,7 +7,11 @@ import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
-    await Firebase.initializeApp();
+    try {
+      await Firebase.initializeApp();
+    } catch (e) {
+      debugPrint('Falha ao inicializar Firebase: $e');
+    }
   }
   runApp(const ProviderScope(child: FormacaoProfessoresApp()));
 }
