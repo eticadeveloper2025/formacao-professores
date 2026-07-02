@@ -20,7 +20,7 @@ class BadgeCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: conquistado
             ? Border.all(color: AppTheme.orange, width: 2)
-            : Border.all(color: Colors.white.withOpacity(0.06), width: 1),
+            : Border.all(color: Colors.white.withValues(alpha: 0.06), width: 1),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Column(
@@ -34,7 +34,7 @@ class BadgeCard extends StatelessWidget {
                 size: 44,
                 color: conquistado
                     ? AppTheme.orange
-                    : AppTheme.textSecondary.withOpacity(0.18),
+                    : AppTheme.textSecondary.withValues(alpha: 0.18),
               ),
               if (!conquistado)
                 Positioned(
@@ -46,7 +46,7 @@ class BadgeCard extends StatelessWidget {
                       color: AppTheme.secondary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppTheme.textSecondary.withOpacity(0.3),
+                        color: AppTheme.textSecondary.withValues(alpha: 0.3),
                         width: 1,
                       ),
                     ),
@@ -68,7 +68,7 @@ class BadgeCard extends StatelessWidget {
             style: TextStyle(
               color: conquistado
                   ? AppTheme.textPrimary
-                  : AppTheme.textSecondary.withOpacity(0.55),
+                  : AppTheme.textSecondary.withValues(alpha: 0.55),
               fontSize: 11,
               fontWeight: FontWeight.w600,
               height: 1.3,

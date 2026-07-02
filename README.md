@@ -17,6 +17,10 @@ O **Formação para Professores** é um aplicativo mobile desenvolvido exclusiva
 - 🔐 Login e cadastro com código de acesso exclusivo
 - 🏠 Home com notificações, grid de coleções e card de formação em andamento
 - 📚 10 formações pedagógicas com módulos e vídeos
+- 🧭 Ementa do projeto com proposta pedagógica, BNCC e materiais
+- 🗓️ Calendário pedagógico com filtros por mês, tipo, semana e capítulo
+- 📝 Planos de aula completos com objetivos, metodologia, avaliação e BNCC
+- 🎙️ Vídeos lembrete com capa estática, narração e transcrição
 - 📊 Histórico de progresso com percentual por formação
 - 🏆 Sistema de conquistas (badges desbloqueáveis)
 - 🔔 Notificações de atualizações e lembretes
@@ -190,6 +194,10 @@ formacao-professores/
 │       │   ├── auth/             ← Login, Cadastro
 │       │   ├── home/             ← Home, Boas-vindas
 │       │   ├── formations/       ← Formações e módulos
+│       │   ├── syllabus/         ← Ementa do Projeto
+│       │   ├── calendar/         ← Calendário pedagógico
+│       │   ├── lesson_plans/     ← Planos de Aula
+│       │   ├── page_reminders/   ← Vídeos lembrete
 │       │   ├── progress/         ← Histórico de progresso
 │       │   └── badges/           ← Conquistas
 │       └── router/               ← Navegação (go_router)
@@ -202,13 +210,18 @@ formacao-professores/
 │           ├── users/            ← Perfil do professor
 │           ├── schools/          ← Escolas
 │           ├── formations/       ← Formações e módulos
+│           ├── syllabus/         ← Ementa do Projeto
+│           ├── calendar/         ← Calendário pedagógico
+│           ├── lesson-plans/     ← Planos de Aula
+│           ├── page-reminders/   ← Vídeos lembrete
 │           ├── progress/         ← Progresso
 │           ├── badges/           ← Insígnias
 │           └── notifications/    ← Notificações
 ├── database/                     ← Scripts SQL
 │   ├── 01_create_tables.sql      ← Criação das tabelas
 │   ├── 02_seed_data.sql          ← Dados mockados
-│   └── 03_access_codes.sql       ← Códigos de acesso
+│   ├── 03_access_codes.sql       ← Códigos de acesso
+│   └── 06_pedagogical_content.sql ← Ementa, calendário, planos e lembretes
 ├── docs/                         ← Documentação
 │   ├── ENDPOINTS.md              ← Todos os endpoints documentados
 │   └── postman/                  ← Collection importável
@@ -224,6 +237,18 @@ A documentação completa dos endpoints está em:
 - **Swagger UI** (interativo): http://localhost:3000/api/docs
 - **Markdown**: [docs/ENDPOINTS.md](docs/ENDPOINTS.md)
 - **Postman**: [docs/postman/Formacao_Professores.postman_collection.json](docs/postman/Formacao_Professores.postman_collection.json)
+
+Novas rotas protegidas por JWT:
+- `GET /syllabus`
+- `GET /calendar`
+- `GET /calendar/:id`
+- `GET /lesson-plans`
+- `GET /lesson-plans/:id`
+- `GET /page-reminders`
+- `GET /page-reminders/page/:pageKey`
+- `GET /page-reminders/:id`
+
+O script `backend/scripts/init-db.js` aplica os seeds incrementais de `06_pedagogical_content.sql` mesmo em bancos já existentes.
 
 ---
 

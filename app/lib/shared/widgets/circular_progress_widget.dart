@@ -34,7 +34,8 @@ class CircularProgressWidget extends StatelessWidget {
           if (label != null)
             Text(
               label!,
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 10),
+              style:
+                  const TextStyle(color: AppTheme.textSecondary, fontSize: 10),
             ),
         ],
       ),

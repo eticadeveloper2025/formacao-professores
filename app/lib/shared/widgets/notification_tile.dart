@@ -27,7 +27,8 @@ class NotificationTile extends StatelessWidget {
           border: lida
               ? null
               : Border.all(
-                  color: AppTheme.brandOrange.withOpacity(0.35), width: 1),
+                  color: AppTheme.brandOrange.withValues(alpha: 0.35),
+                  width: 1),
         ),
         child: IntrinsicHeight(
           child: Row(
@@ -38,7 +39,7 @@ class NotificationTile extends StatelessWidget {
                 width: 4,
                 decoration: BoxDecoration(
                   color: lida
-                      ? AppTheme.textSecondary.withOpacity(0.25)
+                      ? AppTheme.textSecondary.withValues(alpha: 0.25)
                       : AppTheme.brandOrange,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(14),

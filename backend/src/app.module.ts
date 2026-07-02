@@ -8,6 +8,10 @@ import { FormationsModule } from './modules/formations/formations.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { BadgesModule } from './modules/badges/badges.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { SyllabusModule } from './modules/syllabus/syllabus.module';
+import { CalendarModule } from './modules/calendar/calendar.module';
+import { LessonPlansModule } from './modules/lesson-plans/lesson-plans.module';
+import { PageRemindersModule } from './modules/page-reminders/page-reminders.module';
 
 @Module({
   imports: [
@@ -30,6 +34,10 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     ProgressModule,
     BadgesModule,
     NotificationsModule,
+    SyllabusModule,
+    CalendarModule,
+    LessonPlansModule,
+    PageRemindersModule,
   ],
 })
 export class AppModule {}

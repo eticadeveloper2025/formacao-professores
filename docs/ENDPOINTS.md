@@ -410,6 +410,154 @@ Marca uma notificação como lida.
 
 ---
 
+## 🧭 Ementa do Projeto
+
+### GET /syllabus
+🔒 _Requer autenticação_
+
+Retorna todas as seções ativas da ementa, ordenadas para exibição no app.
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Formação para Professores",
+      "content": "Projeto de formação continuada...",
+      "sectionType": "overview",
+      "order": 1,
+      "active": true
+    }
+  ],
+  "message": "Ementa retornada com sucesso"
+}
+```
+
+---
+
+## 🗓️ Calendário
+
+### GET /calendar
+🔒 _Requer autenticação_
+
+Lista entradas do calendário pedagógico.
+
+**Query params opcionais:** `startDate`, `endDate`, `month`, `year`, `type`, `week`, `chapter`, `search`.
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "date": "2026-08-03",
+      "weekNumber": 1,
+      "lessonNumber": 1,
+      "chapter": "1",
+      "theme": "O que são Relações Tóxicas ou Abusivas?",
+      "objective": "Definir e distinguir relações saudáveis...",
+      "activity": "Discussão em grupo...",
+      "activityType": "Aula",
+      "bnccSkills": ["EF06ER09"],
+      "bnccCompetency": "Competência Geral 9...",
+      "status": "planejado",
+      "lessonPlanId": 1,
+      "reminderId": 2
+    }
+  ],
+  "message": "Calendário retornado com sucesso"
+}
+```
+
+### GET /calendar/:id
+🔒 _Requer autenticação_
+
+Retorna detalhes de uma entrada do calendário, incluindo plano de aula e lembrete relacionados quando existirem.
+
+**Status codes:** `200`, `404`
+
+---
+
+## 📝 Planos de Aula
+
+### GET /lesson-plans
+🔒 _Requer autenticação_
+
+Lista planos de aula ativos.
+
+**Query params opcionais:** `chapter`, `week`, `bnccSkill`, `search`.
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Relações tóxicas ou abusivas",
+      "chapter": "1",
+      "theme": "O que são Relações Tóxicas ou Abusivas?",
+      "weekNumber": 1,
+      "lessonNumber": 1,
+      "durationMinutes": 50,
+      "generalObjective": "Definir e distinguir relações saudáveis...",
+      "bnccSkills": ["EF06ER09"],
+      "bnccCompetencies": ["Competência Geral 9"]
+    }
+  ],
+  "message": "Planos de aula retornados com sucesso"
+}
+```
+
+### GET /lesson-plans/:id
+🔒 _Requer autenticação_
+
+Retorna o plano completo com objetivos, preparação, metodologia, atividade, BNCC, avaliação, materiais e orientações.
+
+**Status codes:** `200`, `404`
+
+---
+
+## 🎙️ Vídeos Lembrete
+
+### GET /page-reminders
+🔒 _Requer autenticação_
+
+Lista todos os vídeos lembrete ativos.
+
+### GET /page-reminders/page/:pageKey
+🔒 _Requer autenticação_
+
+Retorna o lembrete contextual de uma página. Exemplos de `pageKey`: `syllabus`, `calendar`, `lesson-plans`, `activities`, `bncc`.
+
+### GET /page-reminders/:id
+🔒 _Requer autenticação_
+
+Retorna um vídeo lembrete pelo ID.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": 1,
+    "pageKey": "syllabus",
+    "title": "Como consultar a ementa",
+    "description": "Explicação em voz sobre a proposta pedagógica...",
+    "mediaUrl": "https://midiasave-5c064.web.app/videonovo.mp4",
+    "thumbnailUrl": "https://...",
+    "transcript": "Nesta página você encontra...",
+    "durationSeconds": 95,
+    "active": true,
+    "order": 1
+  },
+  "message": "Vídeo lembrete retornado com sucesso"
+}
+```
+
+**Status codes:** `200`, `404`
+
+---
+
 ## ❗ Padrão de Erros
 
 ```json

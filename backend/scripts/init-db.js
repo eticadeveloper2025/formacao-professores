@@ -19,6 +19,10 @@ const SQL_FILES = [
   '05_update_basta_video.sql',
 ];
 
+const ALWAYS_RUN_SQL_FILES = [
+  '06_pedagogical_content.sql',
+];
+
 async function initDb() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
@@ -42,22 +46,32 @@ async function initDb() {
       WHERE table_schema = 'public' AND table_name = 'users'
     `);
 
-    if (parseInt(rows[0].count, 10) > 0) {
-      console.log('ℹ️  Tabelas já existem. Pulando inicialização.');
-      await client.end();
-      return;
+    if (parseInt(rows[0].count, 10) === 0) {
+      console.log('🗄️  Inicializando banco de dados...');
+
+      for (const file of SQL_FILES) {
+        const filePath = path.join(SQL_DIR, file);
+        if (!fs.existsSync(filePath)) {
+          console.warn(`⚠️  Arquivo não encontrado, pulando: ${file}`);
+          continue;
+        }
+        const sql = fs.readFileSync(filePath, 'utf8');
+        console.log(`▶  Executando ${file}...`);
+        await client.query(sql);
+        console.log(`✅  ${file} concluído.`);
+      }
+    } else {
+      console.log('ℹ️  Tabelas base já existem. Aplicando scripts incrementais.');
     }
 
-    console.log('🗄️  Inicializando banco de dados...');
-
-    for (const file of SQL_FILES) {
+    for (const file of ALWAYS_RUN_SQL_FILES) {
       const filePath = path.join(SQL_DIR, file);
       if (!fs.existsSync(filePath)) {
-        console.warn(`⚠️  Arquivo não encontrado, pulando: ${file}`);
+        console.warn(`⚠️  Arquivo incremental não encontrado, pulando: ${file}`);
         continue;
       }
       const sql = fs.readFileSync(filePath, 'utf8');
-      console.log(`▶  Executando ${file}...`);
+      console.log(`▶  Executando incremental ${file}...`);
       await client.query(sql);
       console.log(`✅  ${file} concluído.`);
     }

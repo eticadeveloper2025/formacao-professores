@@ -10,7 +10,9 @@ void main() async {
     try {
       await Firebase.initializeApp();
     } catch (e) {
-      debugPrint('Falha ao inicializar Firebase: $e');
+      // Firebase init failed (google-services.json ausente ou inválido).
+      // O app continua sem Firebase Storage — funcionalidades de upload ficarão indisponíveis.
+      debugPrint('[Firebase] initializeApp falhou: $e');
     }
   }
   runApp(const ProviderScope(child: FormacaoProfessoresApp()));

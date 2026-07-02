@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import '../../core/theme/app_theme.dart';
@@ -55,7 +54,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           children: [
             Icon(Icons.error_outline, color: AppTheme.error, size: 48),
             SizedBox(height: 8),
-            Text('Erro ao carregar vídeo', style: TextStyle(color: AppTheme.textSecondary)),
+            Text('Erro ao carregar vídeo',
+                style: TextStyle(color: AppTheme.textSecondary)),
           ],
         ),
       );
@@ -87,7 +87,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _controller.value.isPlaying ? _controller.pause() : _controller.play();
+                _controller.value.isPlaying
+                    ? _controller.pause()
+                    : _controller.play();
               });
             },
             child: Container(
@@ -97,11 +99,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 duration: const Duration(milliseconds: 300),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                   padding: const EdgeInsets.all(12),
-                  child: const Icon(Icons.play_arrow, color: Colors.white, size: 48),
+                  child: const Icon(Icons.play_arrow,
+                      color: Colors.white, size: 48),
                 ),
               ),
             ),
