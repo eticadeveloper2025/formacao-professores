@@ -438,10 +438,52 @@ Retorna todas as seções ativas da ementa, ordenadas para exibição no app.
 
 ## 🗓️ Calendário
 
+No app, o item de menu **Calendário** representa o **Cronograma Formativo** e consome `GET /training-schedule`.
+
+### GET /training-schedule
+🔒 _Requer autenticação_
+
+Retorna os itens ativos do cronograma formativo, ordenados por `order`. Cada item identifica o PDF e a página inicial a ser aberta.
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Fundamentos do projeto",
+      "subtitle": null,
+      "chapter": null,
+      "order": 1,
+      "documentId": 10,
+      "documentUrl": "assets/pdfs/basta/anos_finais_professor.pdf",
+      "startPage": 5,
+      "thumbnailUrl": null,
+      "active": true
+    },
+    {
+      "id": 6,
+      "title": "Capítulo 3",
+      "subtitle": "Harmonia nas Relações: Estratégias",
+      "chapter": "3",
+      "order": 6,
+      "documentId": 10,
+      "documentUrl": "assets/pdfs/basta/anos_finais_professor.pdf",
+      "startPage": 41,
+      "thumbnailUrl": null,
+      "active": true
+    }
+  ],
+  "message": "Cronograma formativo retornado com sucesso"
+}
+```
+
+---
+
 ### GET /calendar
 🔒 _Requer autenticação_
 
-Lista entradas do calendário pedagógico.
+Lista entradas técnicas do calendário pedagógico. Esta rota fica disponível para compatibilidade, mas não é a experiência principal do menu Calendário.
 
 **Query params opcionais:** `startDate`, `endDate`, `month`, `year`, `type`, `week`, `chapter`, `search`.
 

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/app_end_drawer.dart';
 import '../../../../shared/widgets/authenticated_app_bar.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/responsive_content_container.dart';
 import '../../../page_reminders/presentation/widgets/page_reminder_button.dart';
-import '../../data/models/calendar_entry.dart';
-import '../../data/services/calendar_service.dart';
-import '../providers/calendar_provider.dart';
-import '../widgets/calendar_entry_card.dart';
+import '../../data/models/training_schedule_item.dart';
+import '../providers/training_schedule_provider.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -19,346 +18,269 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
-  late DateTime _month;
-  String? _type;
-  int? _week;
-  String? _chapter;
-  String? _search;
-  final _searchController = TextEditingController();
-
-  static const _types = [
-    'Aula',
-    'Atividade no app',
-    'Debate',
-    'Quiz',
-    'Vídeo',
-    'Material complementar',
-  ];
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    _month = DateTime(now.year, now.month);
+    _scrollController = ScrollController();
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  CalendarFilters get _filters => CalendarFilters(
-        month: _month,
-        type: _type,
-        week: _week,
-        chapter: _chapter,
-        search: _search,
-      );
-
   @override
   Widget build(BuildContext context) {
-    final entriesAsync = ref.watch(calendarEntriesProvider(_filters));
+    final scheduleAsync = ref.watch(trainingScheduleProvider);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
       endDrawer: const AppEndDrawer(),
       appBar: buildAuthenticatedAppBar(context: context),
-      body: entriesAsync.when(
-        data: (entries) => RefreshIndicator(
-          color: AppTheme.brandOrange,
-          onRefresh: () async =>
-              ref.refresh(calendarEntriesProvider(_filters).future),
-          child: ListView(
-            children: [
-              ResponsiveContentContainer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const PageReminderButton(pageKey: 'calendar'),
-                    const SizedBox(height: 16),
-                    _Header(
-                      month: _month,
-                      onPrevious: () => setState(() {
-                        _month = DateTime(_month.year, _month.month - 1);
-                      }),
-                      onNext: () => setState(() {
-                        _month = DateTime(_month.year, _month.month + 1);
-                      }),
-                      onToday: () => setState(() {
-                        final now = DateTime.now();
-                        _month = DateTime(now.year, now.month);
-                      }),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Buscar por tema',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: _searchController.text.isEmpty
-                            ? null
-                            : IconButton(
-                                icon: const Icon(Icons.close_rounded),
-                                onPressed: () => setState(() {
-                                  _searchController.clear();
-                                  _search = null;
-                                }),
-                              ),
+      body: scheduleAsync.when(
+        data: (items) {
+          if (items.isEmpty) {
+            return EmptyStateWidget(
+              icon: Icons.calendar_month_rounded,
+              title: 'Cronograma indisponível',
+              subtitle:
+                  'Nenhum conteúdo ativo foi encontrado para o cronograma formativo.',
+              actionLabel: 'Tentar novamente',
+              onAction: () => ref.invalidate(trainingScheduleProvider),
+            );
+          }
+
+          return RefreshIndicator(
+            color: AppTheme.brandOrange,
+            onRefresh: () async => ref.refresh(trainingScheduleProvider.future),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ResponsiveContentContainer(
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PageReminderButton(pageKey: 'calendar'),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'Cronograma Formativo',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
-                      onSubmitted: (value) => setState(() {
-                        _search = value.trim().isEmpty ? null : value.trim();
-                      }),
-                    ),
-                    const SizedBox(height: 12),
-                    _FilterRow(
-                      type: _type,
-                      week: _week,
-                      chapter: _chapter,
-                      types: _types,
-                      onTypeChanged: (value) => setState(() => _type = value),
-                      onWeekChanged: (value) => setState(() => _week = value),
-                      onChapterChanged: (value) =>
-                          setState(() => _chapter = value),
-                      onClear: () => setState(() {
-                        _type = null;
-                        _week = null;
-                        _chapter = null;
-                        _search = null;
-                        _searchController.clear();
-                      }),
-                    ),
-                    const SizedBox(height: 16),
-                    if (entries.isEmpty)
-                      EmptyStateWidget(
-                        icon: Icons.calendar_month_rounded,
-                        title: 'Nenhuma atividade encontrada',
-                        subtitle:
-                            'Ajuste os filtros ou navegue para outro mês do calendário.',
-                        actionLabel: 'Limpar filtros',
-                        onAction: () => setState(() {
-                          _type = null;
-                          _week = null;
-                          _chapter = null;
-                          _search = null;
-                          _searchController.clear();
-                        }),
-                      )
-                    else
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (constraints.maxWidth >= 760) {
-                            return _CalendarTable(entries: entries);
-                          }
-                          return Column(
-                            children: entries
-                                .map((entry) => CalendarEntryCard(entry: entry))
-                                .toList(),
-                          );
-                        },
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Acesse conteúdos, capítulos e materiais na ordem pedagógica do projeto.',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          height: 1.4,
+                        ),
                       ),
-                  ],
+                      const SizedBox(height: 18),
+                      _ScheduleTable(
+                        items: items,
+                        controller: _scrollController,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
         loading: () => const Center(
           child: CircularProgressIndicator(color: AppTheme.brandOrange),
         ),
         error: (_, __) => EmptyStateWidget(
           icon: Icons.error_outline_rounded,
-          title: 'Erro ao carregar o calendário',
+          title: 'Erro ao carregar cronograma',
           subtitle: 'Verifique sua conexão e tente novamente.',
           actionLabel: 'Tentar novamente',
-          onAction: () => ref.invalidate(calendarEntriesProvider(_filters)),
+          onAction: () => ref.invalidate(trainingScheduleProvider),
         ),
       ),
     );
   }
 }
 
-class _Header extends StatelessWidget {
-  final DateTime month;
-  final VoidCallback onPrevious;
-  final VoidCallback onNext;
-  final VoidCallback onToday;
+class _ScheduleTable extends StatelessWidget {
+  final List<TrainingScheduleItem> items;
+  final ScrollController controller;
 
-  const _Header({
-    required this.month,
-    required this.onPrevious,
-    required this.onNext,
-    required this.onToday,
+  const _ScheduleTable({
+    required this.items,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Calendário · ${_monthName(month.month)} ${month.year}',
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
-              fontSize: 21,
-              fontWeight: FontWeight.bold,
+    final maxHeight = MediaQuery.of(context).size.height * 0.62;
+
+    return Container(
+      constraints: BoxConstraints(maxHeight: maxHeight.clamp(360.0, 680.0)),
+      decoration: BoxDecoration(
+        color: AppTheme.cardBackground,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.brandOrange.withValues(alpha: 0.28)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 24, 12),
+            decoration: const BoxDecoration(
+              color: AppTheme.secondary,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
+            ),
+            child: const Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'CONTEÚDO',
+                    style: TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'PÁGINA',
+                  style: TextStyle(
+                    color: AppTheme.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        IconButton(
-          tooltip: 'Mês anterior',
-          onPressed: onPrevious,
-          icon: const Icon(Icons.chevron_left_rounded),
-        ),
-        IconButton(
-          tooltip: 'Próximo mês',
-          onPressed: onNext,
-          icon: const Icon(Icons.chevron_right_rounded),
-        ),
-        TextButton(onPressed: onToday, child: const Text('Hoje')),
-      ],
-    );
-  }
-
-  String _monthName(int month) {
-    const names = [
-      'janeiro',
-      'fevereiro',
-      'março',
-      'abril',
-      'maio',
-      'junho',
-      'julho',
-      'agosto',
-      'setembro',
-      'outubro',
-      'novembro',
-      'dezembro',
-    ];
-    return names[month - 1];
-  }
-}
-
-class _FilterRow extends StatelessWidget {
-  final String? type;
-  final int? week;
-  final String? chapter;
-  final List<String> types;
-  final ValueChanged<String?> onTypeChanged;
-  final ValueChanged<int?> onWeekChanged;
-  final ValueChanged<String?> onChapterChanged;
-  final VoidCallback onClear;
-
-  const _FilterRow({
-    required this.type,
-    required this.week,
-    required this.chapter,
-    required this.types,
-    required this.onTypeChanged,
-    required this.onWeekChanged,
-    required this.onChapterChanged,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        DropdownButton<String?>(
-          value: type,
-          hint: const Text('Tipo'),
-          items: [
-            const DropdownMenuItem<String?>(value: null, child: Text('Todos')),
-            ...types.map((type) => DropdownMenuItem<String?>(
-                  value: type,
-                  child: Text(type),
-                )),
-          ],
-          onChanged: onTypeChanged,
-        ),
-        DropdownButton<int?>(
-          value: week,
-          hint: const Text('Semana'),
-          items: [
-            const DropdownMenuItem<int?>(value: null, child: Text('Todas')),
-            ...List.generate(12, (index) => index + 1).map(
-              (week) => DropdownMenuItem<int?>(
-                value: week,
-                child: Text('Semana $week'),
+          Expanded(
+            child: Scrollbar(
+              controller: controller,
+              thumbVisibility: true,
+              interactive: true,
+              child: ListView.separated(
+                controller: controller,
+                padding: const EdgeInsets.only(right: 10),
+                itemCount: items.length,
+                separatorBuilder: (_, __) => Divider(
+                  height: 1,
+                  color: Colors.white.withValues(alpha: 0.08),
+                ),
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return _ScheduleRow(item: item);
+                },
               ),
             ),
-          ],
-          onChanged: onWeekChanged,
-        ),
-        DropdownButton<String?>(
-          value: chapter,
-          hint: const Text('Capítulo'),
-          items: [
-            const DropdownMenuItem<String?>(value: null, child: Text('Todos')),
-            ...List.generate(6, (index) => '${index + 1}').map(
-              (chapter) => DropdownMenuItem<String?>(
-                value: chapter,
-                child: Text('Cap. $chapter'),
-              ),
-            ),
-          ],
-          onChanged: onChapterChanged,
-        ),
-        OutlinedButton.icon(
-          onPressed: onClear,
-          icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
-          label: const Text('Limpar'),
-        ),
-      ],
-    );
-  }
-}
-
-class _CalendarTable extends StatelessWidget {
-  final List<CalendarEntry> entries;
-
-  const _CalendarTable({required this.entries});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        headingTextStyle: const TextStyle(
-          color: AppTheme.textPrimary,
-          fontWeight: FontWeight.bold,
-        ),
-        dataTextStyle: const TextStyle(color: AppTheme.textSecondary),
-        columns: const [
-          DataColumn(label: Text('Data')),
-          DataColumn(label: Text('Aula/Tema')),
-          DataColumn(label: Text('Objetivo')),
-          DataColumn(label: Text('Atividade')),
-          DataColumn(label: Text('Habilidade BNCC')),
-          DataColumn(label: Text('Competência BNCC')),
+          ),
         ],
-        rows: entries
-            .map(
-              (entry) => DataRow(
-                cells: [
-                  DataCell(Text(_formatDate(entry.date))),
-                  DataCell(SizedBox(width: 180, child: Text(entry.theme))),
-                  DataCell(SizedBox(width: 220, child: Text(entry.objective))),
-                  DataCell(SizedBox(width: 220, child: Text(entry.activity))),
-                  DataCell(Text(entry.bnccSkills.join(', '))),
-                  DataCell(
-                      SizedBox(width: 220, child: Text(entry.bnccCompetency))),
-                ],
-              ),
-            )
-            .toList(),
       ),
     );
   }
+}
 
-  static String _formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}';
+class _ScheduleRow extends StatelessWidget {
+  final TrainingScheduleItem item;
+
+  const _ScheduleRow({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final startPage = item.startPage ?? 1;
+
+    return InkWell(
+      onTap: () {
+        context.push(
+          '/pdf/${item.documentId}?page=$startPage',
+          extra: {
+            'assetPath': item.documentUrl,
+            'title': item.subtitle == null
+                ? item.title
+                : '${item.title} - ${item.subtitle}',
+            'initialPage': startPage,
+          },
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 13, 12, 13),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: AppTheme.brandOrange.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.menu_book_rounded,
+                color: AppTheme.brandOrange,
+                size: 21,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: const TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (item.subtitle != null && item.subtitle!.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      item.subtitle!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 13,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              constraints: const BoxConstraints(minWidth: 36),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppTheme.secondary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                startPage.toString().padLeft(2, '0'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppTheme.brandOrange,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppTheme.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

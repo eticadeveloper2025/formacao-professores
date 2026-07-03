@@ -240,6 +240,7 @@ A documentação completa dos endpoints está em:
 
 Novas rotas protegidas por JWT:
 - `GET /syllabus`
+- `GET /training-schedule`
 - `GET /calendar`
 - `GET /calendar/:id`
 - `GET /lesson-plans`
@@ -248,7 +249,9 @@ Novas rotas protegidas por JWT:
 - `GET /page-reminders/page/:pageKey`
 - `GET /page-reminders/:id`
 
-O script `backend/scripts/init-db.js` aplica os seeds incrementais de `06_pedagogical_content.sql` mesmo em bancos já existentes.
+O menu **Calendário** exibe o Cronograma Formativo carregado de `GET /training-schedule`; cada item abre o PDF relacionado na página configurada.
+
+O script `backend/scripts/init-db.js` aplica os seeds incrementais de `06_pedagogical_content.sql` e `07_training_schedule.sql` mesmo em bancos já existentes.
 
 ---
 

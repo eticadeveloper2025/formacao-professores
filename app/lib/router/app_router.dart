@@ -13,6 +13,7 @@ import '../features/formations/screens/module_screen.dart';
 import '../features/formations/screens/books_list_screen.dart';
 import '../features/formations/screens/pdf_book_pages_screen.dart';
 import '../features/formations/screens/pdf_book_viewer_screen.dart';
+import '../features/formations/data/pdf_document_registry.dart';
 import '../features/progress/screens/history_screen.dart';
 import '../features/badges/screens/badges_screen.dart';
 import '../features/syllabus/presentation/screens/syllabus_screen.dart';
@@ -122,6 +123,33 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             assetPath: extra['assetPath'] as String,
             title: extra['title'] as String,
             initialPage: extra['initialPage'] as int? ?? 1,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/pdf/:documentId',
+        builder: (_, state) {
+          final documentId = int.parse(state.pathParameters['documentId']!);
+          final page =
+              int.tryParse(state.uri.queryParameters['page'] ?? '') ?? 1;
+          final extra = state.extra as Map<String, dynamic>?;
+          final registered = PdfDocumentRegistry.findById(documentId);
+          final assetPath =
+              extra?['assetPath'] as String? ?? registered?.assetPath;
+          final title = extra?['title'] as String? ?? registered?.title;
+
+          if (assetPath == null || title == null) {
+            return const PdfBookViewerScreen(
+              assetPath: 'assets/pdfs/basta/anos_finais_professor.pdf',
+              title: 'Cronograma Formativo',
+              initialPage: 1,
+            );
+          }
+
+          return PdfBookViewerScreen(
+            assetPath: assetPath,
+            title: title,
+            initialPage: extra?['initialPage'] as int? ?? page,
           );
         },
       ),

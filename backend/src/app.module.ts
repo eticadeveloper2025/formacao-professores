@@ -12,6 +12,7 @@ import { SyllabusModule } from './modules/syllabus/syllabus.module';
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { LessonPlansModule } from './modules/lesson-plans/lesson-plans.module';
 import { PageRemindersModule } from './modules/page-reminders/page-reminders.module';
+import { TrainingScheduleModule } from './modules/training-schedule/training-schedule.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PageRemindersModule } from './modules/page-reminders/page-reminders.mod
     CalendarModule,
     LessonPlansModule,
     PageRemindersModule,
+    TrainingScheduleModule,
   ],
 })
 export class AppModule {}

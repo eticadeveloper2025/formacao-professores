@@ -21,6 +21,7 @@ const SQL_FILES = [
 
 const ALWAYS_RUN_SQL_FILES = [
   '06_pedagogical_content.sql',
+  '07_training_schedule.sql',
 ];
 
 async function initDb() {
